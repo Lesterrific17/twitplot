@@ -4,8 +4,8 @@ export default ['$scope', '$q', 'TwitterService', 'GmapsService', function($scop
 
     TwitterService.initialize();
 
-    $scope.getSearchResults = function(){
-        TwitterService.searchTweets().then(function(data){
+    $scope.getSearchResults = function(query){
+        TwitterService.searchTweets(query).then(function(data){
             $scope.search = data.statuses;
             $scope.plotTweets();
         }, function(){
@@ -20,10 +20,14 @@ export default ['$scope', '$q', 'TwitterService', 'GmapsService', function($scop
         }
     }
 
+    $scope.updateSearch = function(){
+        $scope.search = [];
+        $scope.getSearchResults($scope.searchTerm);
+    }
+
     //if the user is a returning user, retrieve the tweets
     if (TwitterService.isReady()) {
         $scope.connectedTwitter = true;
-        $scope.getSearchResults();
     }
     else{
         //else, authenticate the user then retrieve the tweets
@@ -31,7 +35,6 @@ export default ['$scope', '$q', 'TwitterService', 'GmapsService', function($scop
             console.log("Successully connected to Twitter.");
             if (TwitterService.isReady()) {
                 //if the authorization is successful, hide the connect button and display the tweets
-                $scope.getSearchResults();
                 $scope.connectedTwitter = true;
             } else {
                 console.log('Error establishing connection to Twitter.');

@@ -35,9 +35,9 @@ export default ['$q', function($q) {
             OAuth.clearCache('twitter');
             authorizationResult = false;
         },
-        searchTweets: function(){
+        searchTweets: function(query){
             var deferred = $q.defer();
-            var url = '/1.1/search/tweets.json?q=%23earthquake&count=50&geocode=12.3157,123.8854,500km';
+            var url = '/1.1/search/tweets.json?q=' + query + '&count=100';
             var promise = authorizationResult.get(url).done(function(data) {
                 deferred.resolve(data);
             }).fail(function(err) {

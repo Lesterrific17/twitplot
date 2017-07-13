@@ -18,5 +18,7 @@
     "webpack": "^3.2.0",
     "webpack-dev-server": "^2.5.1"
   },
-  "scripts": {}
+  "scripts": {
+    "start": "webpack-dev-server --port 8000 --content-base dist/"
+  }
 }
