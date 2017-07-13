@@ -1,12 +1,8 @@
 <!doctype html>
-<html lang="en" ng-app="twitplot">
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <title>Twitplot</title>
-    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
-    <script src="bower_components/angular/angular.js"></script>
-    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
-
   </head>
   <body>
     <div class="container" ng-controller="TwitterController">
@@ -20,16 +16,7 @@
             <div class="col-lg-12" id="map-canvas"></div>
         </div>
     </div>
-    <link rel="stylesheet" href="styles/twitplot.css"/>
-    <script src="app.js"></script>
-    <script src="services/twitter.service.js"></script>
-    <script src="services/gmaps-service.js"></script>
-    <script src="oauth.js"></script>
-    <script src="controllers/twitter-controller.js"></script>
-    <script src="scripts/gmaps.js"></script>
-    <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-cq1BDG40iEVQG3Bm6rCc5X2yMSvlYPc&callback=initMap">
-    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-cq1BDG40iEVQG3Bm6rCc5X2yMSvlYPc&callback=initMap"></script>
 
   </body>
 </html>
