@@ -1,5 +1,4 @@
-
-angular.module('twitplot.services', []).factory('twitterService', function($q) {
+export default ['$q', function($q) {
 
     var authorizationResult = false;
 
@@ -47,4 +46,4 @@ angular.module('twitplot.services', []).factory('twitterService', function($q) {
             return deferred.promise;
         }
     }
-});
+}]
