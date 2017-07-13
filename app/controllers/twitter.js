@@ -1,12 +1,11 @@
-
-app.controller('TwitterController', function($scope, $q, twitterService, gmapsService) {
+export default ['$scope', '$q', 'TwitterService', 'GmapsService', function($scope, $q, TwitterService, GmapsService) {
 
     $scope.search = [];
 
-    twitterService.initialize();
+    TwitterService.initialize();
 
     $scope.getSearchResults = function(){
-        twitterService.searchTweets().then(function(data){
+        TwitterService.searchTweets().then(function(data){
             $scope.search = data.statuses;
             $scope.plotTweets();
         }, function(){
@@ -17,20 +16,20 @@ app.controller('TwitterController', function($scope, $q, twitterService, gmapsSe
     $scope.plotTweets = function(){
         for(var i = 0; i < $scope.search.length; i++){
             //console.log($scope.search[i].user.location);
-            gmapsService.plotAddress($scope.search[i].user.location);
+            GmapsService.plotAddress($scope.search[i].user.location);
         }
     }
 
     //if the user is a returning user, retrieve the tweets
-    if (twitterService.isReady()) {
+    if (TwitterService.isReady()) {
         $scope.connectedTwitter = true;
         $scope.getSearchResults();
     }
     else{
         //else, authenticate the user then retrieve the tweets
-        twitterService.connectTwitter().then(function() {
+        TwitterService.connectTwitter().then(function() {
             console.log("Successully connected to Twitter.");
-            if (twitterService.isReady()) {
+            if (TwitterService.isReady()) {
                 //if the authorization is successful, hide the connect button and display the tweets
                 $scope.getSearchResults();
                 $scope.connectedTwitter = true;
@@ -39,6 +38,4 @@ app.controller('TwitterController', function($scope, $q, twitterService, gmapsSe
             }
         });
     }
-
-
-});
+}];
