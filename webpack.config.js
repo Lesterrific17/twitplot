@@ -28,7 +28,7 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, 'app', 'index.html'),
-            inject: 'body'
+            inject: 'head'
         })
     ]
 

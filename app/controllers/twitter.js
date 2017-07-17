@@ -1,16 +1,22 @@
 export default ['$scope', '$q', 'TwitterService', 'GmapsService', function($scope, $q, TwitterService, GmapsService) {
 
     $scope.search = [];
+    $scope.queries = [];
 
     TwitterService.initialize();
 
     $scope.getSearchResults = function(query){
         TwitterService.searchTweets(query).then(function(data){
             $scope.search = data.statuses;
-            $scope.plotTweets();
+            //$scope.plotTweets();
         }, function(){
 
         });
+    }
+
+    $scope.newSearch = function(){
+        $('#search-div').append('<div class="search-entry" contenteditable="true" id="q' + $scope.queries.length + '"></div>');
+        $('q' + $scope.queries.length).click();
     }
 
     $scope.plotTweets = function(){

@@ -37,7 +37,7 @@ export default ['$q', function($q) {
         },
         searchTweets: function(query){
             var deferred = $q.defer();
-            var url = '/1.1/search/tweets.json?q=' + query + '&count=100';
+            var url = '/1.1/search/tweets.json?q=' + query + '&count=20';
             var promise = authorizationResult.get(url).done(function(data) {
                 deferred.resolve(data);
             }).fail(function(err) {

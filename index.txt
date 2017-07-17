@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Twitplot</title>
+</head>
+<body id="map-canvas">
+    <div class="left-sidebar">
+        <div id="app-id">Twitplot</div>
+        <div id="s-div">
+            <div id="search-div">
+                <div class="search-entry" contenteditable="false">#earthquake</div>
+                <div class="search-entry" contenteditable="false">hey</div>
+                <div class="search-entry" contenteditable="false">#test</div>
+                <div class="search-entry" contenteditable="false">#dubidubi</div>
+                <div class="search-entry" contenteditable="false">#rest</div>
+                <div class="search-entry" contenteditable="false">#webpack</div>
+                <div class="search-entry" contenteditable="false">#angular</div>
+            </div>
+        </div>
+
+    </div>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-cq1BDG40iEVQG3Bm6rCc5X2yMSvlYPc&callback=initMap"></script>
+</body>
+</html>

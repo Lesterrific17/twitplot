@@ -1,24 +1,49 @@
 <!doctype html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     <title>Twitplot</title>
-  </head>
-  <body>
-    <div class="container" ng-controller="TwitterController">
-        <h1>Twitplot</h1>
-        <div class="row">
-            <div class="col-xs-6">
-                <input ng-model="searchTerm" type="text" class="form-control" id="searchBox" placeholder="Search Tweets" />
-            </div>
-            <div class="col-xs-2">
-                <input ng-click="updateSearch()" class="btn btn-primary" type="button" value="Search"/>
-            </div>
+</head>
+<body ng-controller="TwitterController">
+
+<div id="map-canvas"></div>
+<div id="twitplot-controls">
+    <div id="app-id">Twitplot</div>
+    <div id="s-div">
+        <div id="search-div" ng-click="newSearch()">
+            <div class="search-entry" contenteditable="false">#earthquake</div>
+
         </div>
-        <div class="row">
-            <div class="col-lg-12" id="map-canvas"></div>
+        <input style="margin-top: 20px" type="button" value="Test Twitter API" ng-click="getSearchResults('earthquake')"/>
+    </div>
+</div>
+<div class="right-sidebar">
+
+
+    <div class="tweet" id="loc-card">
+        <div class="tweet-box">
+            <div id="location-text-cont">Found Tweets</div>
         </div>
     </div>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-cq1BDG40iEVQG3Bm6rCc5X2yMSvlYPc&callback=initMap"></script>
-  </body>
+    <div class="tweet" ng-repeat="s in search">
+        <div class="tweet-box">
+            <div class="user-head">
+                <div class="col-20">
+                    <div class="user-avatar" style="background-image: url({{s.user.profile_image_url}})"></div>
+                </div>
+                <div class="col-80">
+                    <div><b>{{s.user.name}}</b></div>
+                    <div class="user-handle">@{{s.user.screen_name}}</div>
+                </div>
+            </div>
+            <div class="tweet-body">
+                {{s.text}}
+                <span class="hashtags" ng-repeat="hashtag in s.entities.hashtags">#{{hashtag.text}} </span>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-cq1BDG40iEVQG3Bm6rCc5X2yMSvlYPc&callback=initMap"></script>
+</body>
 </html>
