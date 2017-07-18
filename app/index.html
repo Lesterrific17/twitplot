@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" ng-app="Twitplot">
 <head>
     <meta charset="utf-8">
     <title>Twitplot</title>
 </head>
-<body ng-controller="TwitterController">
+<body ng-controller="MainController">
 
 <div id="map-canvas"></div>
 <div id="twitplot-controls">
@@ -14,36 +14,34 @@
             <div class="search-entry" contenteditable="false">#earthquake</div>
 
         </div>
-        <input style="margin-top: 20px" type="button" value="Test Twitter API" ng-click="getSearchResults('earthquake')"/>
+        <!input style="margin-top: 20px" type="button" value="Test Twitter API" ng-click="getSearchResults('%23haiku+%23poetry')"/>
     </div>
 </div>
 <div class="right-sidebar">
-
-
     <div class="tweet" id="loc-card">
         <div class="tweet-box">
             <div id="location-text-cont">Found Tweets</div>
         </div>
     </div>
-    <div class="tweet" ng-repeat="s in search">
+    <div class="tweet" ng-repeat="tweet in tweets">
         <div class="tweet-box">
             <div class="user-head">
                 <div class="col-20">
-                    <div class="user-avatar" style="background-image: url({{s.user.profile_image_url}})"></div>
+                    <div class="user-avatar" style="background-image: url({{tweet.user.profile_image_url}})"></div>
                 </div>
                 <div class="col-80">
-                    <div><b>{{s.user.name}}</b></div>
-                    <div class="user-handle">@{{s.user.screen_name}}</div>
+                    <div><b>{{tweet.user.name}}</b></div>
+                    <div class="user-handle">@{{tweet.user.screen_name}}</div>
                 </div>
             </div>
             <div class="tweet-body">
-                {{s.text}}
-                <span class="hashtags" ng-repeat="hashtag in s.entities.hashtags">#{{hashtag.text}} </span>
+                {{tweet.text}}
+                <span class="hashtags" ng-repeat="hashtag in tweet.entities.hashtags">#{{hashtag.text}} </span>
             </div>
         </div>
     </div>
 
 </div>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-cq1BDG40iEVQG3Bm6rCc5X2yMSvlYPc&callback=initMap"></script>
+<!script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-cq1BDG40iEVQG3Bm6rCc5X2yMSvlYPc&callback=initMap"><!/script>
 </body>
 </html>

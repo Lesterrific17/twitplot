@@ -6,34 +6,30 @@ import 'bootstrap/dist/css/bootstrap.css';
 import './oauth';
 import './styles/twitplot.css';
 
-import GmapsService from './services/gmaps';
+import MainController from './controllers/main';
 import TwitterService from './services/twitter';
-import TwitterController from './controllers/twitter';
 
 window.jQuery = $;
 window.$ = $;
 
-window.initMap = function(){
+var app = angular.module('Twitplot', ['ngSanitize'])
+    .controller('MainController', MainController)
+    .factory('TwitterService', TwitterService);
+app.mapReady = false;
 
-    console.log("initializing map...")
+window.initMap = function() {
+
     const map = new google.maps.Map(document.getElementById('map-canvas'), {
-        center: { lat: 12.3157, lng: 123.8854 },
+        center: {lat: 12.3157, lng: 123.8854},
         mapTypeId: 'terrain',
         scrollwheel: false,
         zoom: 6
     });
 
     const MapUtilityService = MapUtilityServiceFactory(map);
-
-    angular.module('twitplot', ['ngSanitize'])
-        .factory('MapUtilityService', MapUtilityService)
-        .factory('TwitterService', TwitterService)
-        .factory('GmapsService', GmapsService)
-        .controller('TwitterController', TwitterController);
-
-    angular.bootstrap(document, ['twitplot']);
-
-};
+    app.factory("MapUtilityService", MapUtilityService);
+    app.mapReady = true;
+}
 
 const MapUtilityServiceFactory = map => () => ({
     putCircle: location => {
@@ -47,6 +43,5 @@ const MapUtilityServiceFactory = map => () => ({
             center: { lat: location.lat, lng: location.lng },
             radius: 50000/map.zoom
         });
-
     }
 });

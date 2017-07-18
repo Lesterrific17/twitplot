@@ -1,4 +1,4 @@
-export default ['$q', '$http', 'MapUtilityService', function($q, $http, MapUtilityService) {
+export default ['$q', '$http', function($q, $http) {
 
     return {
         plotAddress: function(address) {
@@ -13,7 +13,7 @@ export default ['$q', '$http', 'MapUtilityService', function($q, $http, MapUtili
             }).then(function successCallback(response){
                 //console.log(response.data.results[0].geometry.location);
                 try{
-                    MapUtilityService.putCircle(response.data.results[0].geometry.location);
+                    //MapUtilityService.putCircle(response.data.results[0].geometry.location);
                 }
                 catch(e){
                     //unable to geocode address
