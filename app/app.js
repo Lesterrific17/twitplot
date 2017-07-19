@@ -8,6 +8,7 @@ import './styles/twitplot.css';
 
 import MainController from './controllers/main';
 import TwitterService from './services/twitter';
+import GmapsService from './services/gmaps';
 
 window.jQuery = $;
 window.$ = $;
@@ -15,33 +16,26 @@ window.$ = $;
 var app = angular.module('Twitplot', ['ngSanitize'])
     .controller('MainController', MainController)
     .factory('TwitterService', TwitterService);
-app.mapReady = false;
 
 window.initMap = function() {
 
     const map = new google.maps.Map(document.getElementById('map-canvas'), {
         center: {lat: 12.3157, lng: 123.8854},
-        mapTypeId: 'terrain',
+        mapTypeId: 'roadmap',
         scrollwheel: false,
-        zoom: 6
+        zoom: 7
     });
+    app.factory('GmapsService', GmapsService);
 
-    const MapUtilityService = MapUtilityServiceFactory(map);
-    app.factory("MapUtilityService", MapUtilityService);
-    app.mapReady = true;
-}
+};
 
-const MapUtilityServiceFactory = map => () => ({
-    putCircle: location => {
-        var cityCircle = new google.maps.Circle({
-            strokeColor: '#FF0000',
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: '#FF0000',
-            fillOpacity: 0.35,
-            map: map,
-            center: { lat: location.lat, lng: location.lng },
-            radius: 50000/map.zoom
-        });
-    }
+$(document).ready(function(){
+    $('.modern-toggle').click(function(){
+        if($(this).hasClass('on')){
+            $(this).removeClass('on').addClass('off');
+        }
+        else if($(this).hasClass('off')){
+            $(this).removeClass('off').addClass('on');
+        }
+    });
 });

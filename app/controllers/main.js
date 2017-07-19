@@ -24,30 +24,22 @@ export default ['$scope', '$q', 'TwitterService', function($scope, $q, TwitterSe
     /*  retrieves tweets relevant to the query string
         using Twitter's Search API   */
     $scope.getTweets = function(){
-        TwitterService.searchTweets('manila', $scope.tweetCount).then(function(data){
+        TwitterService.searchTweets(getQueryString(), $scope.tweetCount).then(function(data){
             $scope.tweets = data.statuses;
-            //console.log($scope.tweets);
-            //organizeTweets();
+            console.log($scope.tweets.length);
         }, function(){
 
         });
     };
 
-    /*  builds the URL query string (to be sent to Twitter's Search API)
-        from the array of queries   */
-    function buildQueryString(){
+    function getQueryString(){
+        for(var i = 0; i < $scope.queries.length; i++){
 
+        }
     }
 
-    function organizeTweets(){
-        for(var i = 0; i < $scope.tweets.length; i++){
-            if($scope.tweets[i].coordinates != null){
-                console.log($scope.tweets[i].coordinates);
-            }
-            if($scope.tweets[i].place != null){
-                console.log($scope.tweets[i].place);
-            }
-        }
+    if($scope.connectedTwitter){
+        //$scope.getTweets();
     }
 
 }];

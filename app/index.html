@@ -6,13 +6,70 @@
 </head>
 <body ng-controller="MainController">
 
-<div id="map-canvas"></div>
 <div id="twitplot-controls">
     <div id="app-id">Twitplot</div>
-    <div id="s-div">
-        <div id="search-div" ng-click="newSearch()">
-            <div class="search-entry" contenteditable="false">#earthquake</div>
+    <div id="app-id-gutter"></div>
 
+    <div class="control-header">
+        <div class="control-icon icon-container"><div></div></div>
+        <div class="control-label">Search Parameters</div>
+    </div>
+    <div class="control-content">
+        <div id="search-div">
+            <div class="search-entry hashtag-search">#twitter</div>
+            <div class="search-entry mention-search">@mention</div>
+            <div class="search-entry creator-search">from: Lenka</div>
+            <div class="search-entry generic-search">generic search</div>
+            <input id="search-param-input" type="text" placeholder="Add Search..."/>
+        </div>
+
+    </div>
+
+    <div class="control-header">
+        <div class="control-icon icon-container"><div></div></div>
+        <div class="control-label">Settings</div>
+    </div>
+    <div class="control-content">
+        <div class="sub-control-header">WHAT TO PLOT</div>
+        <div class="conf-list-container">
+            <div class="conf-entry">
+                <div class="conf-label">Tweet Geolocations</div>
+                <div class="conf-action">
+                    <div class="modern-toggle on animate2s"><div class="animate2s"></div></div>
+                </div>
+            </div>
+            <div class="conf-entry">
+                <div class="conf-label">User Locations</div>
+                <div class="conf-action">
+                    <div class="modern-toggle off animate2s"><div class="animate2s"></div></div>
+                </div>
+            </div>
+            <div class="conf-entry">
+                <div class="conf-label">Associated Locations</div>
+                <div class="conf-action">
+                    <div class="modern-toggle off animate2s"><div class="animate2s"></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div id="map-canvas"></div>
+
+
+<!--<div id="twitplot-controls">
+    <div id="app-id">Twitplot</div>
+    <div id="s-div">
+
+        <div id="search-type-div">
+            <div class="search-entry hashtag-search">#hashtag</div>
+            <div class="search-entry mention-search">@mention</div>
+            <div class="search-entry creator-search">by user</div>
+            <div class="search-entry generic-search">in tweet</div>
+        </div>
+
+        <div id="search-div" contenteditable="true">
+            <div class="search-entry hashtag-search" contenteditable="false">#twitter</div>
         </div>
         <!input style="margin-top: 20px" type="button" value="Test Twitter API" ng-click="getSearchResults('%23haiku+%23poetry')"/>
     </div>
@@ -42,6 +99,7 @@
     </div>
 
 </div>
-<!script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-cq1BDG40iEVQG3Bm6rCc5X2yMSvlYPc&callback=initMap"><!/script>
+-->
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-cq1BDG40iEVQG3Bm6rCc5X2yMSvlYPc&callback=initMap"></script>
 </body>
 </html>

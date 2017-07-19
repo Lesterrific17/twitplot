@@ -5,15 +5,10 @@ html{
 body{
     margin: 0px;
     padding: 0px;
-    background-color: rgb(240, 240, 240);
-    font-family: Arial;
-    color: rgb(80, 80, 80);
+    font-family: sans-serif, Arial;
+    color: rgb(60, 60, 60);
     height: 100%;
     position: relative;
-}
-
-.temp{
-    background-color: rgb(240, 240, 240);
 }
 
 input,
@@ -23,31 +18,116 @@ textarea{
     outline: none;
 }
 
-#twitplot-controls{
-    position: absolute;
-    left: 10px;
-    top: 50px;
-    width: 350px;
-    background-color: rgba(255, 255, 255, 0.9);
-    z-index: 100;
-    padding: 40px 0px 20px 0px;
+.icon-container{
+    position: relative;
 }
 
-.right-sidebar{
+.icon-container > div{
     position: absolute;
-    right: 0px;
+    margin: auto;
+    border-radius: 50%;
     top: 0px;
-    width: 350px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    height: 50%;
+    width: 50%;
+    background-color: seagreen;
+}
+
+.animate2s{
+    -webkit-transition: all 0.2s ease-in-out;
+    -moz-transition: all 0.2s ease-in-out;
+    -o-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
+}
+.animate3s{
+    -webkit-transition: all 0.3s ease-in-out;
+    -moz-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+}
+.animate4s{
+    -webkit-transition: all 0.4s ease-in-out;
+    -moz-transition: all 0.4s ease-in-out;
+    -o-transition: all 0.4s ease-in-out;
+    transition: all 0.4s ease-in-out;
+}
+.animate6s{
+    -webkit-transition: all 0.6s ease-in-out;
+    -moz-transition: all 0.6s ease-in-out;
+    -o-transition: all 0.6s ease-in-out;
+    transition: all 0.6s ease-in-out;
+}
+
+#map-canvas{
+    margin-left: 300px;
     height: 100%;
-    background-color: rgba(240, 240, 240, 0.9);
+    background-color: white;
+    /*box-shadow: 10px 0px 5px -5px rgb(60, 60, 60);*/
+}
+
+#twitplot-controls{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 300px;
+    height: 100%;
+    background-color: white;
     overflow-y: auto;
     z-index: 100;
+    box-shadow: 10px 0px 5px -10px rgb(100, 100, 100);
 }
 
 #app-id{
-    font-size: 2em;
+    margin: 20px 0px 0px 0px;
+    font-size: 1.8em;
     font-weight: bold;
     text-align: center;
+    letter-spacing: 0.1em;
+}
+
+#app-id-gutter{
+    width: 20%;
+    margin: 10px 40% 20px 40%;
+    border: 1px solid rgb(220, 220, 220);
+}
+
+.control-header{
+    width: 90%;
+    margin: 0 5% 0 5%;
+    height: 30px;
+}
+
+.control-icon{
+    float: left;
+    width: 30px;
+    height: 30px;
+}
+
+.control-label{
+    float: left;
+    max-width: 200px;
+    margin: 7px 0px 0px 10px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 0.9em;
+}
+
+.control-content{
+    background-color: rgb(240, 240, 240);
+    min-height: 50px;
+    border: 1px solid rgb(220, 220, 220);
+    border-width: 1px 0px 1px 0px;
+    margin: 5px 0px 25px 0px;
+}
+
+.sub-control-header{
+    font-size: 0.8em;
+    font-weight: bold;
+    color: rgb(120, 120, 120);
+    margin: 20px 0px 0px 20px;
 }
 
 #s-div{
@@ -55,31 +135,126 @@ textarea{
     text-align: center;
 }
 
-#search-div{
-    display: inline-block;
+#search-type-div{
     width: 90%;
+    display: inline-block;;
     text-align: left;
-    outline: none;
     padding: 5px;
     padding-bottom: 0px;
-    background-color: rgb(240, 240, 240);
+}
+
+#search-div{
+    margin: 15px;
+    background-color: white;
+    border: 1px solid rgb(220, 220, 220);
+    padding: 8px 8px 0px 8px;
 }
 
 .search-entry{
     display: inline-block;
     color: white;
-    background-color: indianred;
     padding: 5px;
-    margin: 0px 5px 5px 0px;
+    margin: 0px 4px 8px 0px;
     font-weight: lighter;
-    font-size: 0.8em;
+    font-size: 0.9em;
     outline: none;
 }
 
-#map-canvas{
-    margin-right: 350px;
+#search-param-input{
+    background-color: inherit;
+    border: none;
+    padding: 0px 0px 0px 5px;
+    display: inline-block;
+    margin: 0px 4px 8px 0px;
+    font-size: 0.9em;
+    border-left: 1px solid rgb(200, 200, 200);
+}
+
+.hashtag-search{
+    background-color: olivedrab;
+}
+
+.creator-search{
+    background-color: indianred;
+}
+
+.mention-search{
+    background-color: darkcyan;
+}
+
+.generic-search{
+    background-color: darkgoldenrod;
+}
+
+div.conf-list-container{
+    margin: 10px 15px 15px 15px;
+    background-color: white;
+    border: 1px solid rgb(220, 220, 220);
+    border-bottom-width: 0px;
+}
+
+div.conf-entry{
+    height: 40px;
+    border-bottom: 1px solid rgb(220, 220, 220);
+}
+
+div.conf-label{
+    float: left;
+    width: 70%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    margin: 12px 0px 0px 10px;
+    font-size: 0.85em;
+    color: rgb(100, 100, 100);
+}
+
+div.conf-action{
+    float: right;
+    width: 20%;
     height: 100%;
-    box-shadow: 10px 0px 5px -5px rgb(60, 60, 60);
+    position: relative;
+}
+
+div.conf-action > div{
+    position: absolute;
+    margin: auto;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+div.modern-toggle{
+    height: 16px;
+    width: 30px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+div.modern-toggle > div{
+    height: 16px;
+    width: 16px;
+    border-radius: inherit;
+    background-color: white;
+    border: 1px solid rgb(200, 200, 200);
+}
+
+div.on{
+    background-color: seagreen;
+}
+
+div.off{
+    background-color: rgb(200, 200, 200);
+}
+
+div.on > div{
+    margin-left: 14px;
+    border: 1px solid seagreen;
+}
+
+div.off > div{
+    margin-left: 0px;
 }
 
 #right-sb-header{
