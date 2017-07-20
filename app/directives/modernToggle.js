@@ -2,30 +2,29 @@
 const modernToggleDirective = () => ({
 
     restrict: 'E',
-    template: '<div class="modern-toggle on animate2s"><div class="animate2s"></div></div>',
+    template: '<div class="modern-toggle animate2s"><div class="animate2s"></div></div>',
     replace: true,
     scope: {
         onToggle: '&',
-        title: '@'
+        title: '@',
+        state: '='
     },
-    link: (scope, element) => {
+    link: (scope, element, attr) => {
 
-        /* INFO */ console.info(element);
+        $(element).addClass(attr.state);
+        scope.state = attr.state;
 
-        element.attr('title', scope.title);
-
-        element[0].click(() => {
-            scope.onToggle(true);
-
-            if (element.hasClass('on')) {
-                element.removeClass('on').addClass('off');
+        $(element).click(() => {
+            var toggleState = attr.state;
+            if(toggleState === 'off'){
+                $(element).removeClass('off').addClass('on');
+                attr.state = 'on';
             }
-            else if (element.hasClass('off')) {
-                element.removeClass('off').addClass('on');
+            else if(toggleState === 'on'){
+                $(element).removeClass('on').addClass('off');
+                attr.state = 'off';
             }
-
         });
-
     }
 
 });

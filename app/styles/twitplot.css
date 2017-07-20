@@ -160,11 +160,14 @@ textarea{
     outline: none;
 }
 
+#sparam-form{
+    display: inline-block;
+}
+
 #search-param-input{
     background-color: inherit;
     border: none;
     padding: 0px 0px 0px 5px;
-    display: inline-block;
     margin: 0px 4px 8px 0px;
     font-size: 0.9em;
     border-left: 1px solid rgb(200, 200, 200);

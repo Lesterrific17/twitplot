@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>Twitplot</title>
 </head>
-<body ng-controller="MainController as MAIN">
+<body ng-controller="MainController">
 
 <div id="twitplot-controls">
     <div id="app-id">Twitplot</div>
@@ -17,10 +17,9 @@
     <div class="control-content">
         <div id="search-div">
             <div class="search-entry hashtag-search">#twitter</div>
-            <div class="search-entry mention-search">@mention</div>
-            <div class="search-entry creator-search">from: Lenka</div>
-            <div class="search-entry generic-search">generic search</div>
-            <input id="search-param-input" type="text" placeholder="Add Search..."/>
+            <form ng-submit="validateSearchParam()" id="sparam-form">
+                <input id="search-param-input" type="text" placeholder="Add Search..." ng-model="paramInput"/>
+            </form>
         </div>
 
     </div>
@@ -35,19 +34,19 @@
             <div class="conf-entry">
                 <div class="conf-label">Tweet Geolocations</div>
                 <div class="conf-action">
-                    <modern-toggle on-toggle="MAIN.onToggle($value)" title="Toggle this"></modern-toggle>
+                    <modern-toggle state="off" title="toggle this"></modern-toggle>
                 </div>
             </div>
             <div class="conf-entry">
                 <div class="conf-label">User Locations</div>
                 <div class="conf-action">
-                    <div class="modern-toggle off animate2s"><div class="animate2s"></div></div>
+                    <modern-toggle state="off" title="toggle this"></modern-toggle>
                 </div>
             </div>
             <div class="conf-entry">
                 <div class="conf-label">Associated Locations</div>
                 <div class="conf-action">
-                    <div class="modern-toggle off animate2s"><div class="animate2s"></div></div>
+                    <modern-toggle state="off" title="toggle this"></modern-toggle>
                 </div>
             </div>
         </div>
@@ -100,6 +99,6 @@
 
 </div>
 -->
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-cq1BDG40iEVQG3Bm6rCc5X2yMSvlYPc&callback=initMap"></script>
+<!script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-cq1BDG40iEVQG3Bm6rCc5X2yMSvlYPc&callback=initMap"><!å/script>
 </body>
 </html>
