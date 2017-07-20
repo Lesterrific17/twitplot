@@ -29,6 +29,9 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, 'app', 'index.html'),
             inject: 'head'
+        }),
+        new webpack.DefinePlugin({
+            TWITTER_API: JSON.stringify('/1.1/search/tweets.json')
         })
     ]
 

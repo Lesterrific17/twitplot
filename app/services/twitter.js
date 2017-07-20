@@ -37,9 +37,10 @@ export default['$q', function($q){
             authorizationResult = false;
         },
 
-        searchTweets: function(query, count){
+        searchTweets: function(query, count) {
             var deferred = $q.defer();
-            var url = '/1.1/search/tweets.json?q=' + query + '&count=' + count;
+            var searchMe = 'searchMe';
+            var url = TWITTER_API + `?q=${query}&count=${count}`;
             var promise = authorizationResult.get(url).done(function(data) {
                 deferred.resolve(data);
             }).fail(function(err) {

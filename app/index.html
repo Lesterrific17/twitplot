@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>Twitplot</title>
 </head>
-<body ng-controller="MainController">
+<body ng-controller="MainController as MAIN">
 
 <div id="twitplot-controls">
     <div id="app-id">Twitplot</div>
@@ -35,7 +35,7 @@
             <div class="conf-entry">
                 <div class="conf-label">Tweet Geolocations</div>
                 <div class="conf-action">
-                    <div class="modern-toggle on animate2s"><div class="animate2s"></div></div>
+                    <modern-toggle on-toggle="MAIN.onToggle($value)" title="Toggle this"></modern-toggle>
                 </div>
             </div>
             <div class="conf-entry">

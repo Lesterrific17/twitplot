@@ -1,7 +1,9 @@
 
-export default ['$scope', '$q', 'TwitterService', function($scope, $q, TwitterService){
+export default ['$scope', '$q', 'TwitterService', function($scope, $q, TwitterService) {
 
-    $scope.locations = [];
+    let vm = this;
+
+    vm.locations = [];
     $scope.tweets = [];
     $scope.queries = [];
     $scope.tweetCount = 100;
@@ -32,11 +34,24 @@ export default ['$scope', '$q', 'TwitterService', function($scope, $q, TwitterSe
         });
     };
 
-    function getQueryString(){
-        for(var i = 0; i < $scope.queries.length; i++){
+    this.onToggle = $value => {
+        // todo
 
+    };
+
+    const getQueryString = () => {
+        for(var i = 0; i < this.queries.length; i++){
         }
-    }
+    };
+
+    const activate = () => {
+
+
+
+    };
+
+    activate();
+
 
     if($scope.connectedTwitter){
         //$scope.getTweets();
