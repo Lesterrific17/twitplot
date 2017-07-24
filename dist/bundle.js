@@ -8838,7 +8838,7 @@ function ajaxConvert( s, response, jqXHR, isSuccess ) {
 
 jQuery.extend( {
 
-	// Counter for holding the number of active queries
+	// Counter for holding the number of active searchParameters
 	active: 0,
 
 	// Last-Modified header cache for next request
@@ -10361,7 +10361,7 @@ module.exports = function(useSourceMap) {
 			var item = modules[i];
 			// skip already imported module
 			// this implementation is not 100% perfect for weird media query combinations
-			//  when a module is imported multiple times with different media queries.
+			//  when a module is imported multiple times with different media searchParameters.
 			//  I hope this will never occur (Hey this way we have smaller bundles)
 			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
 				if(mediaQuery && !item[2]) {
