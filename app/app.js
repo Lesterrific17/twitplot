@@ -9,7 +9,7 @@ import './styles/twitplot.css';
 import MainController from './controllers/main';
 import TwitterService from './services/twitter';
 import GmapsService from './services/gmaps';
-import ModernToggleDirective from './directives/modernToggle';
+import toggleSettingDirective from './directives/toggleSetting';
 
 window.jQuery = $;
 window.$ = $;
@@ -17,7 +17,7 @@ window.$ = $;
 var app = angular.module('Twitplot', ['ngSanitize'])
     .controller('MainController', MainController)
     .factory('TwitterService', TwitterService)
-    .directive('modernToggle', ModernToggleDirective);
+    .directive('toggleSetting', toggleSettingDirective);
 
 window.initMap = function() {
 

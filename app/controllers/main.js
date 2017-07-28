@@ -5,20 +5,25 @@ export default ['$scope', 'TwitterService', function($scope, TwitterService) {
     $scope.tweets = [];
     $scope.tweetCount = 100;
 
-    $scope.searchParameters = [
-        { entry: '#microsoft', type: 'hashtag' },
-        { entry: '#surface', type: 'hashtag' }
-    ];
+    $scope.searchParameters = [];
 
     $scope.locationSettings = [
-        { name: 'Twitter Geolocations', state: 'off', value: false },
-        { name: 'Associated Locations', state: 'on', value: true },
-        { name: 'User Locations', state: 'off', value: false }
+        { name: 'Twitter Geolocations', state: 'off',   value: false },
+        { name: 'Associated Locations', state: 'on',    value: true },
+        { name: 'User Locations',       state: 'off',   value: false }
     ];
+
+    $scope.refreshButton = { state: 'inactive', text: 'Refresh Tweets' };
+
+    $scope.tweetPreloader = { state: 'inactive' };
+    $scope.mapPreloader =   { state: 'inactive' };
 
     /*  deletes a search parameter given its index in the parameters array  */
     $scope.deleteSearchParam = value => {
         $scope.searchParameters.splice(value, 1);
+        if($scope.searchParameters.length === 0){
+            $scope.refreshButton.state = 'inactive';
+        }
     };
 
     /*  parses the input search param, checks duplicates, categorizes it, and prompts the user
@@ -31,19 +36,51 @@ export default ['$scope', 'TwitterService', function($scope, TwitterService) {
         }
 
         let paramParsers = [
-            { exp: /^#/, type: 'hashtag' },
-            { exp: /^@/, type: 'mention'},
-            { exp: /^(from:)/, type: 'creator'},
-            { exp: /^.*/, type: 'generic'}
+            { regex: /^#/,          type: 'hashtag' },
+            { regex: /^@/,          type: 'mention'},
+            { regex: /^(from:)/,    type: 'creator'},
+            { regex: /^.*/,         type: 'generic'}
         ];
 
         for (let i = 0; i < paramParsers.length; i++) {
-            if (paramParsers[i].exp.test($scope.inputParameter)) {
+            if (paramParsers[i].regex.test($scope.inputParameter)) {
                 $scope.searchParameters.push({ entry: $scope.inputParameter, type: paramParsers[i].type });
                 break;
             }
         }
         $scope.inputParameter = '';
+        if($scope.searchParameters.length > 0){
+            $scope.refreshButton.state = '';
+        }
+
+    };
+
+    /*  refreshes the list of tweets using the current search parameters */
+    $scope.refreshTweets = () => {
+
+        if($scope.refreshButton.state !== 'inactive' && $scope.searchParameters.length > 0) {
+            tweetsPreloadSequence(true);
+            getTweets();
+        }
+
+    };
+
+    /*  manipulates the visuals for when the "refresh tweets" button is hit
+    *   and after the tweets have been fetched from Twitter
+    *   accepts a boolean flag for "on" or "off" */
+    const tweetsPreloadSequence = flag => {
+
+        if(flag){
+            $scope.refreshButton.text = 'Refreshing...'
+            $scope.refreshButton.state = 'inactive';
+            $scope.tweetPreloader.state = '';
+            $('#twitplot-data').scrollTop(0);
+        }
+        else{
+            $scope.refreshButton.text = 'Refresh Tweets';
+            $scope.refreshButton.state = '';
+            $scope.tweetPreloader.state = 'inactive';
+        }
 
     };
 
@@ -73,7 +110,9 @@ export default ['$scope', 'TwitterService', function($scope, TwitterService) {
     };
 
     const consolidateLocations = () => {
+        for(let i = 0; i < $scope.tweets.length; i++){
 
+        }
     };
 
     /*  retrieves tweets relevant to the query string
@@ -82,7 +121,7 @@ export default ['$scope', 'TwitterService', function($scope, TwitterService) {
 
         TwitterService.searchTweets(getQueryString(), $scope.tweetCount).then(function(data) {
             $scope.tweets = data.statuses;
-            console.log($scope.tweets.length);
+            tweetsPreloadSequence(false);
         }, function() {
             /*  put error msg here */
         });
@@ -96,13 +135,11 @@ export default ['$scope', 'TwitterService', function($scope, TwitterService) {
 
         if (TwitterService.isReady()) {
             $scope.connectedTwitter = true;
-            getTweets();
         }
         else{
             TwitterService.connectTwitter().then(function() {
                 if (TwitterService.isReady()) {
                     $scope.connectedTwitter = true;
-                    getTweets();
                 } else {
                     /*  inform the user twitter connection failed  */
                 }

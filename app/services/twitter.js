@@ -53,7 +53,6 @@ export default['$q', function($q){
         /*  sends a query string to Twitter's Search API and returns the JSON response */
         searchTweets: function(query, count) {
 
-            console.log(query);
             let deferred = $q.defer();
             let url = TWITTER_API + `?q=${query}&count=${count}`;
 

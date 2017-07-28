@@ -18,86 +18,73 @@
     <div class="control-content">
         <div id="search-div">
             <div ng-repeat="q in searchParameters track by $index" class="search-entry {{ q.type }}-search">
-                <div class="icon-container search-entry-x" ng-click="deleteSearchParam($index)"><img src="images/wrong.svg"/></div>
+                <div class="icon-container search-entry-x" ng-click="deleteSearchParam($index)">
+                    <img src="images/wrong.svg"/>
+                </div>
                 <div class="search-entry-text">{{ q.entry }}</div>
             </div>
             <form ng-submit="validateSearchParam()" id="sparam-form">
-                <input id="search-param-input" type="text" placeholder="Add Search..." ng-model="inputParameter"/>
+                <input id="search-param-input" type="text" placeholder="Add Parameter" ng-model="inputParameter"/>
             </form>
+            <div class="content-gutter"></div>
         </div>
         <div id="refresh-box">
-            <p id="refresh-notif">The search parameters have changed.</p>
+            <input type="button" class="generic-button {{ refreshButton.state }}" ng-click="refreshTweets()" value="{{ refreshButton.text }}"/>
         </div>
     </div>
 
     <div class="control-header">
-        <div class="control-icon icon-container"><img src="images/settings.svg"/></div>
+        <div class="control-icon icon-container">
+            <img src="images/settings.svg"/>
+        </div>
         <div class="control-label">Settings</div>
     </div>
     <div class="control-content">
         <div class="sub-control-header">WHAT TO PLOT</div>
         <div class="conf-list-container">
-            <div class="conf-entry" ng-repeat="locSetting in locationSettings">
-                <div class="conf-label">{{ locSetting.name }}</div>
-                <div class="conf-action">
-                    <modern-toggle state="off" title="toggle this"></modern-toggle>
-                </div>
-            </div>
+            <toggle-setting ng-repeat="setting in locationSettings"></toggle-setting>
         </div>
     </div>
 </div>
+
 <div id="twitplot-data">
-    <div id="data-header">FOUND TWEETS</div>
+    <div class="preloader-overlay {{ tweetPreloader.state }}">
+        <div class="cssload-container">
+            <div class="cssload-speeding-wheel"></div>
+        </div>
+    </div>
+    <div id="data-header">SEARCH RESULTS</div>
     <div class="app-id-gutter"></div>
-
-    <div class="tweet" ng-repeat="tweet in tweets">
-        <div class="tweet-box">
+    <div id="search-result-info">Found <b> {{ tweets.length }} </b> Tweets</div>
+    <div id="tweets-list">
+        <div class="tweet-box" ng-repeat="tweet in tweets">
             <div class="user-head">
                 <div class="col-20">
-                    <div class="user-avatar" style="background-image: url({{tweet.user.profile_image_url}})"></div>
+                    <div class="user-avatar" style="background-image: url({{ tweet.user.profile_image_url }})"></div>
                 </div>
                 <div class="col-80">
-                    <div><b>{{tweet.user.name}}</b></div>
-                    <div class="user-handle">@{{tweet.user.screen_name}}</div>
+                    <div><b>{{ tweet.user.name }}</b></div>
+                    <div class="user-handle">@{{ tweet.user.screen_name }}</div>
                 </div>
             </div>
             <div class="tweet-body">
-                {{tweet.text}}
+                {{ tweet.text }}
                 <br/>
-                <span class="hashtags" ng-repeat="hashtag in tweet.entities.hashtags">#{{hashtag.text}} </span>
+                <span class="hashtags" ng-repeat="hashtag in tweet.entities.hashtags">#{{ hashtag.text }} </span>
             </div>
         </div>
     </div>
 </div>
-<div id="map-canvas"></div>
 
-<!--
-<div id="tweets-drawer">
-    <div class="tweet" id="loc-card">
-        <div class="tweet-box">
-            <div id="location-text-cont">Found Tweets</div>
+<div id="map-canvas">
+    <div class="preloader-overlay {{ mapPreloader.state }}">
+        <div class="cssload-container">
+            <div class="cssload-speeding-wheel"></div>
         </div>
     </div>
-    <div class="tweet" ng-repeat="tweet in tweets">
-        <div class="tweet-box">
-            <div class="user-head">
-                <div class="col-20">
-                    <div class="user-avatar" style="background-image: url({{tweet.user.profile_image_url}})"></div>
-                </div>
-                <div class="col-80">
-                    <div><b>{{tweet.user.name}}</b></div>
-                    <div class="user-handle">@{{tweet.user.screen_name}}</div>
-                </div>
-            </div>
-            <div class="tweet-body">
-                {{tweet.text}}
-                <span class="hashtags" ng-repeat="hashtag in tweet.entities.hashtags">#{{hashtag.text}} </span>
-            </div>
-        </div>
-    </div>
+
 </div>
--->
 
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-cq1BDG40iEVQG3Bm6rCc5X2yMSvlYPc&callback=initMap"></script>
+<!script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-cq1BDG40iEVQG3Bm6rCc5X2yMSvlYPc&callback=initMap"><!/script>
 </body>
 </html>

@@ -58,7 +58,66 @@ textarea{
     transition: all 0.6s ease-in-out;
 }
 
+div.preloader-overlay {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+div.inactive{
+    display: none;
+}
+
+.cssload-container {
+    width: 100%;
+    height: 49px;
+    text-align: center;
+    position: absolute;
+    margin: auto;
+    top: 0px;
+    bottom: 0px;
+    right: 0px;
+    left: 0px;
+}
+
+.cssload-speeding-wheel {
+    width: 49px;
+    height: 49px;
+    margin: 0 auto;
+    border: 3px solid darkcyan;
+    border-radius: 50%;
+    border-left-color: transparent;
+    border-right-color: transparent;
+    animation: cssload-spin 575ms infinite linear;
+    -o-animation: cssload-spin 575ms infinite linear;
+    -ms-animation: cssload-spin 575ms infinite linear;
+    -webkit-animation: cssload-spin 575ms infinite linear;
+    -moz-animation: cssload-spin 575ms infinite linear;
+}
+
+@keyframes cssload-spin {
+    100%{ transform: rotate(360deg); transform: rotate(360deg); }
+}
+
+@-o-keyframes cssload-spin {
+    100%{ -o-transform: rotate(360deg); transform: rotate(360deg); }
+}
+
+@-ms-keyframes cssload-spin {
+    100%{ -ms-transform: rotate(360deg); transform: rotate(360deg); }
+}
+
+@-webkit-keyframes cssload-spin {
+    100%{ -webkit-transform: rotate(360deg); transform: rotate(360deg); }
+}
+
+@-moz-keyframes cssload-spin {
+    100%{ -moz-transform: rotate(360deg); transform: rotate(360deg); }
+}
+
 #map-canvas{
+    position: relative;
     margin-left: 600px;
     height: 100%;
     background-color: white;
@@ -85,7 +144,7 @@ textarea{
     background-color: white;
     overflow-y: auto;
     z-index: 100;
-    box-shadow: 10px 0px 5px -10px rgb(100, 100, 100);
+    box-shadow: 10px 0px 5px -11px rgb(100, 100, 100);
 }
 
 #app-id{
@@ -157,6 +216,7 @@ div.app-id-gutter{
     margin: 15px 15px 0px 15px;
     background-color: white;
     border: 1px solid rgb(220, 220, 220);
+    border-bottom-width: 0px;
     padding: 8px 8px 0px 8px;
 }
 
@@ -221,16 +281,42 @@ div.app-id-gutter{
     background-color: darkgoldenrod;
 }
 
+div.content-gutter{
+    border-top: 1px solid rgb(220, 220, 220);;
+}
+
 #refresh-box{
-    margin: 15px;
+    margin: 0px 15px 15px 15px;
     background-color: white;
     border: 1px solid rgb(220, 220, 220);
-    padding: 8px 8px 0px 8px;
+    border-top-width: 0px;
+    padding: 8px;
 }
 
 #refresh-notif{
     padding: 2px;
     font-size: 0.9em;
+}
+
+#refresh-button-icon{
+    width: 20%;
+    height: 100%;
+    float: left;
+    background-color: gray;
+}
+
+input[type=button].generic-button{
+    background-color: darkcyan;
+    color: white;
+    font-size: 0.9em;
+    border: none;
+    padding: 5px 10px 5px 10px;
+    font-weight: lighter;
+    outline: none;
+}
+
+input[type=button].inactive{
+    background-color: rgb(150, 150, 150);
 }
 
 div.conf-list-container{
@@ -277,6 +363,7 @@ div.modern-toggle{
     width: 30px;
     border-radius: 8px;
     cursor: pointer;
+    background-color: rgb(200, 200, 200);
 }
 
 div.modern-toggle > div{
@@ -308,53 +395,26 @@ div.off > div{
     text-align: center;
     padding: 25px 20px 10px 20px;
     font-weight: bold;
-    font-weight: bold;
 }
 
-
-
-
-#tweets-drawer{
-    position: fixed;
-    overflow-y: auto;
-    right: 0px;
-    top: 0px;
-    width: 300px;
-    height: 100%;
-    background-color: rgba(240, 240, 240, 0.8);
-    z-index: 10;
+#search-result-info{
+    width: 90%;
+    margin: 0% 5% 10px 5%;
+    font-size: 0.9em;
 }
 
-#right-sb-header{
-    width: 95%;
-    height: 100px;
-    background-color: white;
+#search-result-info > b{
+    color: darkcyan;
 }
 
-#loc-card{
-    margin: 10px 0px 10px 0px;
-}
-
-#location-text-cont{
-    font-size: 1.5em;
-    font-weight: bold;
-    padding: 0px 10px 0px 10px;
-}
-
-#loc-tweets-boundary{
-    border-bottom: 3px solid rgb(220, 220, 220);
-    width: 70%;
-    margin: 10px 15% 10px 15%;
-}
-
-.tweet{
-    width: 100%;
-    text-align: center;
-    margin: 0px 0px 0px 0px;
+#tweets-list{
+    width: 90%;
+    margin: 0% 5% 0% 5%;
+    border-bottom: 1px solid rgb(220, 220, 220);
 }
 
 .tweet-box{
-    width: 90%;
+    width: 100%;
     height: 100%;
     display: inline-block;
     background-color: rgb(255, 255, 255);
