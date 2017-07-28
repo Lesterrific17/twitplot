@@ -28,7 +28,10 @@ module.exports = {
             },
             {
                 test: /\.html$/,
-                loader: 'html-loader?name=templates/[name].[ext]'
+                loader: `ngtemplate-loader/!html-loader`,
+                exclude: [
+                  path.resolve(__dirname, 'app/index.html')
+                ]
             }
         ]
     },

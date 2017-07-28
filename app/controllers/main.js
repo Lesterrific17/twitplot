@@ -8,13 +8,17 @@ export default ['$scope', 'TwitterService', function($scope, TwitterService) {
     $scope.searchParameters = [];
 
     $scope.locationSettings = [
-        { name: 'Twitter Geolocations', state: 'off',   value: false },
-        { name: 'Associated Locations', state: 'on',    value: true },
-        { name: 'User Locations',       state: 'off',   value: false }
+        { name: 'Twitter Geolocations', state: false },
+        { name: 'Associated Locations', state: true },
+        { name: 'User Locations',       state: false }
     ];
+
+    // $scope.$watch('locationSettings', () => {}, true);
 
     $scope.refreshButton = { state: 'inactive', text: 'Refresh Tweets' };
 
+    // $scope.loadingTweets = false;
+    // $scope.loadingMap = false;
     $scope.tweetPreloader = { state: 'inactive' };
     $scope.mapPreloader =   { state: 'inactive' };
 

@@ -1,11 +1,17 @@
+import toggleSetting from '../templates/toggleSetting.html';
 
-export default function () {
-    return {
-        template: require('raw-loader!./templates/toggleSetting.html'),
-        restrict: 'E',
-        replace: true,
-        controller: function($scope) {
-
-        }
+export default () => ({
+    restrict: 'E',
+    templateUrl: toggleSetting,
+    replace: true,
+    scope: true,
+    require: 'ngModel',
+    link: (scope, element, attr, ngModel) => {
+      ngModel.$render = () => {
+        scope.setting = ngModel.$modelValue;
+      }
+      scope.$watch('setting.state', () => {
+        ngModel.$setViewValue(ngModel.$modelValue);
+      })
     }
-};
+});

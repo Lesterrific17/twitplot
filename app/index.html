@@ -42,13 +42,15 @@
     <div class="control-content">
         <div class="sub-control-header">WHAT TO PLOT</div>
         <div class="conf-list-container">
-            <toggle-setting ng-repeat="setting in locationSettings"></toggle-setting>
+          <div ng-repeat="setting in locationSettings">
+            <toggle-setting ng-model="setting"></toggle-setting>
+          </div>
         </div>
     </div>
 </div>
 
 <div id="twitplot-data">
-    <div class="preloader-overlay {{ tweetPreloader.state }}">
+    <div class="preloader-overlay" ng-if="tweetPreloader.state === 'active'">
         <div class="cssload-container">
             <div class="cssload-speeding-wheel"></div>
         </div>
