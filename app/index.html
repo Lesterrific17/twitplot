@@ -17,7 +17,7 @@
 
     <div class="control-content">
         <div id="search-div">
-            <div ng-repeat="q in searchParameters track by $index" class="search-entry {{ q.type }}-search">
+            <div ng-repeat="q in searchParameters track by $index" class="search-entry {{ q.type }}-search" ng-class="">
                 <div class="icon-container search-entry-x" ng-click="deleteSearchParam($index)">
                     <img src="images/wrong.svg"/>
                 </div>
@@ -29,7 +29,7 @@
             <div class="content-gutter"></div>
         </div>
         <div id="refresh-box">
-            <input type="button" class="generic-button {{ refreshButton.state }}" ng-click="refreshTweets()" value="{{ refreshButton.text }}"/>
+            <input type="button" class="generic-button inactive" ng-class="[loadingTweets === true || searchParameters.length === 0 ? 'inactive' : '']" ng-click="refreshTweets()" ng-value="refreshButton.text"/>
         </div>
     </div>
 
@@ -50,7 +50,7 @@
 </div>
 
 <div id="twitplot-data">
-    <div class="preloader-overlay" ng-if="tweetPreloader.state === 'active'">
+    <div class="preloader-overlay" ng-if="loadingTweets">
         <div class="cssload-container">
             <div class="cssload-speeding-wheel"></div>
         </div>
@@ -79,7 +79,7 @@
 </div>
 
 <div id="map-canvas">
-    <div class="preloader-overlay {{ mapPreloader.state }}">
+    <div class="preloader-overlay" ng-if="loadingLocations">
         <div class="cssload-container">
             <div class="cssload-speeding-wheel"></div>
         </div>

@@ -13,14 +13,10 @@ export default ['$scope', 'TwitterService', function($scope, TwitterService) {
         { name: 'User Locations',       state: false }
     ];
 
-    // $scope.$watch('locationSettings', () => {}, true);
-
     $scope.refreshButton = { state: 'inactive', text: 'Refresh Tweets' };
 
-    // $scope.loadingTweets = false;
-    // $scope.loadingMap = false;
-    $scope.tweetPreloader = { state: 'inactive' };
-    $scope.mapPreloader =   { state: 'inactive' };
+    $scope.loadingTweets = false;
+    $scope.loadingLocations = false;
 
     /*  deletes a search parameter given its index in the parameters array  */
     $scope.deleteSearchParam = value => {
@@ -75,15 +71,13 @@ export default ['$scope', 'TwitterService', function($scope, TwitterService) {
     const tweetsPreloadSequence = flag => {
 
         if(flag){
-            $scope.refreshButton.text = 'Refreshing...'
-            $scope.refreshButton.state = 'inactive';
-            $scope.tweetPreloader.state = '';
+            $scope.refreshButton.text = 'Refreshing...';
+            $scope.preloadingTweets = true;
             $('#twitplot-data').scrollTop(0);
         }
         else{
             $scope.refreshButton.text = 'Refresh Tweets';
-            $scope.refreshButton.state = '';
-            $scope.tweetPreloader.state = 'inactive';
+            $scope.preloadingTweets = false;
         }
 
     };
