@@ -1,5 +1,5 @@
 
-export default ['$scope', 'TwitterService', function($scope, TwitterService) {
+export default ['$scope', 'TwitterService', 'GmapsService', function($scope, TwitterService, GmapsService) {
 
     $scope.locations = [];
     $scope.tweets = [];
@@ -8,12 +8,12 @@ export default ['$scope', 'TwitterService', function($scope, TwitterService) {
     $scope.searchParameters = [];
 
     $scope.locationSettings = [
-        { name: 'Twitter Geolocations', state: false },
+        { name: 'Twitter Geolocations', state: true },
         { name: 'Associated Locations', state: true },
-        { name: 'User Locations',       state: false }
+        { name: 'User Locations',       state: true }
     ];
 
-    $scope.refreshButton = { state: 'inactive', text: 'Refresh Tweets' };
+    $scope.refreshButton = { text: 'Refresh Tweets' };
 
     $scope.loadingTweets = false;
     $scope.loadingLocations = false;
@@ -21,9 +21,6 @@ export default ['$scope', 'TwitterService', function($scope, TwitterService) {
     /*  deletes a search parameter given its index in the parameters array  */
     $scope.deleteSearchParam = value => {
         $scope.searchParameters.splice(value, 1);
-        if($scope.searchParameters.length === 0){
-            $scope.refreshButton.state = 'inactive';
-        }
     };
 
     /*  parses the input search param, checks duplicates, categorizes it, and prompts the user
@@ -49,16 +46,13 @@ export default ['$scope', 'TwitterService', function($scope, TwitterService) {
             }
         }
         $scope.inputParameter = '';
-        if($scope.searchParameters.length > 0){
-            $scope.refreshButton.state = '';
-        }
 
     };
 
     /*  refreshes the list of tweets using the current search parameters */
     $scope.refreshTweets = () => {
 
-        if($scope.refreshButton.state !== 'inactive' && $scope.searchParameters.length > 0) {
+        if($scope.searchParameters.length > 0) {
             tweetsPreloadSequence(true);
             getTweets();
         }
@@ -72,12 +66,12 @@ export default ['$scope', 'TwitterService', function($scope, TwitterService) {
 
         if(flag){
             $scope.refreshButton.text = 'Refreshing...';
-            $scope.preloadingTweets = true;
+            $scope.loadingTweets = true;
             $('#twitplot-data').scrollTop(0);
         }
         else{
             $scope.refreshButton.text = 'Refresh Tweets';
-            $scope.preloadingTweets = false;
+            $scope.loadingTweets = false;
         }
 
     };
@@ -107,11 +101,28 @@ export default ['$scope', 'TwitterService', function($scope, TwitterService) {
 
     };
 
-    const consolidateLocations = () => {
-        for(let i = 0; i < $scope.tweets.length; i++){
+    const consolidateTweetLocations = () => {
 
+        $scope.loadingLocations = true;
+        for(let i = 0; i < $scope.tweets.length; i++){
+            if($scope.tweets[i].geo !== null && $scope.locationSettings[0].state) {
+                //GmapsService.reverseGeocode($scope.tweets[i].geo.coordinates[0], $scope.tweets[i].geo.coordinates[1]);
+                GmapsService.plot(window.map, ...$scope.tweets[i].geo.coordinates);
+            }
+            else if($scope.tweets[i].place !== null && $scope.locationSettings[1].state) {
+                //console.log($scope.tweets[i].place);
+            }
+            else if($scope.tweets[i].user.location !== null && $scope.locationSettings[2].state) {
+                //console.log($scope.tweets[i].user.location);
+            }
         }
+        $scope.loadingLocations = false;
+
     };
+
+    $scope.$watch('locationSettings', function(){
+        $scope.refreshTweets();
+    }, true);
 
     /*  retrieves tweets relevant to the query string
      *  using Twitter's Search API   */
@@ -120,6 +131,7 @@ export default ['$scope', 'TwitterService', function($scope, TwitterService) {
         TwitterService.searchTweets(getQueryString(), $scope.tweetCount).then(function(data) {
             $scope.tweets = data.statuses;
             tweetsPreloadSequence(false);
+            consolidateTweetLocations();
         }, function() {
             /*  put error msg here */
         });

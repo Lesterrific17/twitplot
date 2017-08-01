@@ -18,17 +18,18 @@ window.$ = $;
 var app = angular.module('Twitplot', ['ngSanitize'])
     .controller('MainController', MainController)
     .factory('TwitterService', TwitterService)
+    .factory('GmapsService', GmapsService)
     .directive('toggleSetting', toggleSettingDirective)
     .directive('toggle', toggleDirective);
 
 window.initMap = function() {
 
-    const map = new google.maps.Map(document.getElementById('map-canvas'), {
-        center: {lat: 12.3157, lng: 123.8854},
+    var map = new google.maps.Map(document.getElementById('map-canvas'), {
+        center: { lat: 12.3157, lng: 123.8854 },
         mapTypeId: 'roadmap',
         scrollwheel: false,
         zoom: 7
     });
-    app.factory('GmapsService', GmapsService);
+    window.map = map;
 
 };

@@ -10791,6 +10791,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__services_twitter__ = __webpack_require__(20);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__services_gmaps__ = __webpack_require__(21);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__directives_toggleSetting__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__directives_toggle__ = __webpack_require__(24);
+
 
 
 
@@ -10810,17 +10812,19 @@ window.$ = __WEBPACK_IMPORTED_MODULE_2_jquery___default.a;
 var app = __WEBPACK_IMPORTED_MODULE_0_angular___default.a.module('Twitplot', ['ngSanitize'])
     .controller('MainController', __WEBPACK_IMPORTED_MODULE_6__controllers_main__["a" /* default */])
     .factory('TwitterService', __WEBPACK_IMPORTED_MODULE_7__services_twitter__["a" /* default */])
-    .directive('toggleSetting', __WEBPACK_IMPORTED_MODULE_9__directives_toggleSetting__["a" /* default */]);
+    .factory('GmapsService', __WEBPACK_IMPORTED_MODULE_8__services_gmaps__["a" /* default */])
+    .directive('toggleSetting', __WEBPACK_IMPORTED_MODULE_9__directives_toggleSetting__["a" /* default */])
+    .directive('toggle', __WEBPACK_IMPORTED_MODULE_10__directives_toggle__["a" /* default */]);
 
 window.initMap = function() {
 
-    const map = new google.maps.Map(document.getElementById('map-canvas'), {
-        center: {lat: 12.3157, lng: 123.8854},
+    var map = new google.maps.Map(document.getElementById('map-canvas'), {
+        center: { lat: 12.3157, lng: 123.8854 },
         mapTypeId: 'roadmap',
         scrollwheel: false,
         zoom: 7
     });
-    app.factory('GmapsService', __WEBPACK_IMPORTED_MODULE_8__services_gmaps__["a" /* default */]);
+    window.map = map;
 
 };
 
@@ -46835,7 +46839,7 @@ exports.push([module.i, "html{\n    height: 100%;\n}\n\nbody{\n    margin: 0px;\
 
 "use strict";
 
-/* harmony default export */ __webpack_exports__["a"] = (['$scope', 'TwitterService', function($scope, TwitterService) {
+/* harmony default export */ __webpack_exports__["a"] = (['$scope', 'TwitterService', 'GmapsService', function($scope, TwitterService, GmapsService) {
 
     $scope.locations = [];
     $scope.tweets = [];
@@ -46844,22 +46848,19 @@ exports.push([module.i, "html{\n    height: 100%;\n}\n\nbody{\n    margin: 0px;\
     $scope.searchParameters = [];
 
     $scope.locationSettings = [
-        { name: 'Twitter Geolocations', state: 'off',   value: false },
-        { name: 'Associated Locations', state: 'on',    value: true },
-        { name: 'User Locations',       state: 'off',   value: false }
+        { name: 'Twitter Geolocations', state: true },
+        { name: 'Associated Locations', state: true },
+        { name: 'User Locations',       state: true }
     ];
 
-    $scope.refreshButton = { state: 'inactive', text: 'Refresh Tweets' };
+    $scope.refreshButton = { text: 'Refresh Tweets' };
 
-    $scope.tweetPreloader = { state: 'inactive' };
-    $scope.mapPreloader =   { state: 'inactive' };
+    $scope.loadingTweets = false;
+    $scope.loadingLocations = false;
 
     /*  deletes a search parameter given its index in the parameters array  */
     $scope.deleteSearchParam = value => {
         $scope.searchParameters.splice(value, 1);
-        if($scope.searchParameters.length === 0){
-            $scope.refreshButton.state = 'inactive';
-        }
     };
 
     /*  parses the input search param, checks duplicates, categorizes it, and prompts the user
@@ -46885,16 +46886,13 @@ exports.push([module.i, "html{\n    height: 100%;\n}\n\nbody{\n    margin: 0px;\
             }
         }
         $scope.inputParameter = '';
-        if($scope.searchParameters.length > 0){
-            $scope.refreshButton.state = '';
-        }
 
     };
 
     /*  refreshes the list of tweets using the current search parameters */
     $scope.refreshTweets = () => {
 
-        if($scope.refreshButton.state !== 'inactive' && $scope.searchParameters.length > 0) {
+        if($scope.searchParameters.length > 0) {
             tweetsPreloadSequence(true);
             getTweets();
         }
@@ -46907,15 +46905,13 @@ exports.push([module.i, "html{\n    height: 100%;\n}\n\nbody{\n    margin: 0px;\
     const tweetsPreloadSequence = flag => {
 
         if(flag){
-            $scope.refreshButton.text = 'Refreshing...'
-            $scope.refreshButton.state = 'inactive';
-            $scope.tweetPreloader.state = '';
+            $scope.refreshButton.text = 'Refreshing...';
+            $scope.loadingTweets = true;
             $('#twitplot-data').scrollTop(0);
         }
         else{
             $scope.refreshButton.text = 'Refresh Tweets';
-            $scope.refreshButton.state = '';
-            $scope.tweetPreloader.state = 'inactive';
+            $scope.loadingTweets = false;
         }
 
     };
@@ -46945,11 +46941,28 @@ exports.push([module.i, "html{\n    height: 100%;\n}\n\nbody{\n    margin: 0px;\
 
     };
 
-    const consolidateLocations = () => {
-        for(let i = 0; i < $scope.tweets.length; i++){
+    const consolidateTweetLocations = () => {
 
+        $scope.loadingLocations = true;
+        for(let i = 0; i < $scope.tweets.length; i++){
+            if($scope.tweets[i].geo !== null && $scope.locationSettings[0].state) {
+                //GmapsService.reverseGeocode($scope.tweets[i].geo.coordinates[0], $scope.tweets[i].geo.coordinates[1]);
+                GmapsService.plot(window.map, ...$scope.tweets[i].geo.coordinates);
+            }
+            else if($scope.tweets[i].place !== null && $scope.locationSettings[1].state) {
+                //console.log($scope.tweets[i].place);
+            }
+            else if($scope.tweets[i].user.location !== null && $scope.locationSettings[2].state) {
+                //console.log($scope.tweets[i].user.location);
+            }
         }
+        $scope.loadingLocations = false;
+
     };
+
+    $scope.$watch('locationSettings', function(){
+        $scope.refreshTweets();
+    }, true);
 
     /*  retrieves tweets relevant to the query string
      *  using Twitter's Search API   */
@@ -46958,6 +46971,7 @@ exports.push([module.i, "html{\n    height: 100%;\n}\n\nbody{\n    margin: 0px;\
         TwitterService.searchTweets(getQueryString(), $scope.tweetCount).then(function(data) {
             $scope.tweets = data.statuses;
             tweetsPreloadSequence(false);
+            consolidateTweetLocations();
         }, function() {
             /*  put error msg here */
         });
@@ -46988,6 +47002,7 @@ exports.push([module.i, "html{\n    height: 100%;\n}\n\nbody{\n    margin: 0px;\
     activate();
 
 }]);
+
 
 /***/ }),
 /* 20 */
@@ -47074,9 +47089,51 @@ exports.push([module.i, "html{\n    height: 100%;\n}\n\nbody{\n    margin: 0px;\
 
 /* harmony default export */ __webpack_exports__["a"] = (['$http', function($http){
 
+    let apiKey = 'AIzaSyA-cq1BDG40iEVQG3Bm6rCc5X2yMSvlYPc';
+    let markers = [];
+
     return{
 
+        /*  returns the coordinates (lat, long) of the place using the Google Maps
+        *   JavaScript API  */
+        geocode: place => {
+
+        },
+
+        /*  return the name of a place given the coordinates using the Google Maps
+        *  JavaScript API   */
+        reverseGeocode: (lat, lng) => {
+
+            $http({
+                method: 'GET',
+                url: `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat}, ${lng}&key=${apiKey}`
+            })
+            .then(function success(response){
+                if(response.data.results.length > 0){
+                    console.log(response.data.results[0]);
+                }
+            })
+
+        },
+
+        /*  puts a marker on a map corresponding to the given coordinate */
+        plot: (map, lat, lng) => {
+
+            markers.push(new google.maps.Circle({
+                strokeColor: '#FF0000',
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: '#FF0000',
+                fillOpacity: 0.35,
+                map: map,
+                center: { lat: lat, lng: lng },
+                radius: 50000/map.zoom
+            }));
+
+        }
+
     }
+
 }]);
 
 /***/ }),
@@ -47090,10 +47147,17 @@ exports.push([module.i, "html{\n    height: 100%;\n}\n\nbody{\n    margin: 0px;\
 
 /* harmony default export */ __webpack_exports__["a"] = (() => ({
     restrict: 'E',
-    template: __WEBPACK_IMPORTED_MODULE_0__templates_toggleSetting_html___default.a,
+    templateUrl: __WEBPACK_IMPORTED_MODULE_0__templates_toggleSetting_html___default.a,
     replace: true,
-    controller: $scope => {
-
+    scope: true,
+    require: 'ngModel',
+    link: (scope, element, attr, ngModel) => {
+      ngModel.$render = () => {
+        scope.setting = ngModel.$modelValue;
+      }
+      scope.$watch('setting.state', () => {
+        ngModel.$setViewValue(ngModel.$modelValue);
+      })
     }
 }));
 
@@ -47102,10 +47166,40 @@ exports.push([module.i, "html{\n    height: 100%;\n}\n\nbody{\n    margin: 0px;\
 /* 23 */
 /***/ (function(module, exports) {
 
-var path = '/Users/billieko/Developer/github/twitplot/app/templates/toggleSetting.html';
-var html = "<div class=\"conf-entry\" >\n    <div class=\"conf-label\">{{ setting.name }}</div>\n    <div class=\"conf-action\">\n        <div class=\"modern-toggle animate2s\"><div class=\"animate2s\"></div></div>\n    </div>\n</div>\n";
+var path = '/Users/Mark/Developer/twitplot/app/templates/toggleSetting.html';
+var html = "<div class=\"conf-entry\" >\n    <div class=\"conf-label\">{{ setting.name }}</div>\n    <div class=\"conf-action\">\n        <toggle ng-model=\"setting.state\"></toggle>\n    </div>\n</div>\n";
 window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, html) }]);
 module.exports = path;
+
+/***/ }),
+/* 24 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+
+/* harmony default export */ __webpack_exports__["a"] = (($timeout) => ({
+    restrict: 'E',
+    template:
+      `<div class="modern-toggle animate2s" ng-class="[state ? 'on' : 'off']">
+        <div class="animate2s"></div>
+      </div>`,
+    replace: true,
+    scope: true,
+    require: 'ngModel',
+    link: (scope, element, attr, ngModel) => {
+      ngModel.$render = () => {
+        scope.state = ngModel.$modelValue;
+      };
+      let toggle = $(element);
+      toggle.click(() => {
+        $timeout(() => {
+          scope.state = !scope.state;
+          ngModel.$setViewValue(scope.state);
+        })
+      });
+    }
+}));
+
 
 /***/ })
 /******/ ]);
