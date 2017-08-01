@@ -3,7 +3,7 @@ export default ['$scope', 'TwitterService', 'GmapsService', function($scope, Twi
 
     $scope.locations = [];
     $scope.tweets = [];
-    $scope.tweetCount = 100;
+    $scope.tweetCount = 50;
 
     $scope.searchParameters = [];
 
@@ -101,16 +101,25 @@ export default ['$scope', 'TwitterService', 'GmapsService', function($scope, Twi
 
     };
 
-    const consolidateTweetLocations = () => {
-
+    const consolidateTweetLocations = tweets => {
+        $scope.tweets = tweets;
         $scope.loadingLocations = true;
         for(let i = 0; i < $scope.tweets.length; i++){
+
+            let tweet;
+
             if($scope.tweets[i].geo !== null && $scope.locationSettings[0].state) {
-                //GmapsService.reverseGeocode($scope.tweets[i].geo.coordinates[0], $scope.tweets[i].geo.coordinates[1]);
-                GmapsService.plot(window.map, ...$scope.tweets[i].geo.coordinates);
+                let rgeocode = GmapsService.reverseGeocode($scope.tweets[i].geo.coordinates[0], $scope.tweets[i].geo.coordinates[1]);
+                tweet = { tweet: $scope.tweets[i], location: {
+                    formatted_address: rgeocode.formatted_address,
+                    lat: rgeocode.geometry.location.lat,
+                    lng: rgeocode.geometry.location.lng
+                } };
+                console.log(tweet);
+                //GmapsService.plot(window.map, ...$scope.tweets[i].geo.coordinates);
             }
             else if($scope.tweets[i].place !== null && $scope.locationSettings[1].state) {
-                //console.log($scope.tweets[i].place);
+
             }
             else if($scope.tweets[i].user.location !== null && $scope.locationSettings[2].state) {
                 //console.log($scope.tweets[i].user.location);
@@ -129,9 +138,8 @@ export default ['$scope', 'TwitterService', 'GmapsService', function($scope, Twi
     const getTweets = () => {
 
         TwitterService.searchTweets(getQueryString(), $scope.tweetCount).then(function(data) {
-            $scope.tweets = data.statuses;
             tweetsPreloadSequence(false);
-            consolidateTweetLocations();
+            consolidateTweetLocations(data.statuses);
         }, function() {
             /*  put error msg here */
         });

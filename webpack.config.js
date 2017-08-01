@@ -19,22 +19,19 @@ module.exports = {
                 use: ['style-loader', 'css-loader']
             },
             {
-                test: /\.woff($|\?)|\.woff2($|\?)|\.ttf($|\?)|\.eot($|\?)/,
+                test: /\.woff($|\?)|\.woff2($|\?)|\.ttf($|\?)|\.eot($|\?)|\.svg($|\?)/,
                 loader: 'url-loader'
             },
             {
-                test: /\.(jpg|svg|png)$/,
-                use: [
-                    'file-loader?name=images/[name].[ext]',
-                    'html-loader'
+                test: /\.html$/,
+                loader: `ngtemplate-loader`,
+                exclude: [
+                  path.resolve(__dirname, 'app/index.html')
                 ]
             },
             {
                 test: /\.html$/,
-                loader: `ngtemplate-loader/!html-loader`,
-                exclude: [
-                  path.resolve(__dirname, 'app/index.html')
-                ]
+                loader: `html-loader`
             }
         ]
     },

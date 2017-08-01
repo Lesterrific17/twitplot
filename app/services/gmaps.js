@@ -1,6 +1,7 @@
 
 export default ['$http', function($http){
 
+    let gmapsApiUrl = 'https://maps.googleapis.com/maps/api/geocode/json';
     let apiKey = 'AIzaSyA-cq1BDG40iEVQG3Bm6rCc5X2yMSvlYPc';
     let markers = [];
 
@@ -8,7 +9,14 @@ export default ['$http', function($http){
 
         /*  returns the coordinates (lat, long) of the place using the Google Maps
         *   JavaScript API  */
-        geocode: place => {
+        geocode: address => {
+
+            $http({
+                method: 'GET',
+                url: `${ gmapsApiUrl }?address=` + encodeURIComponent(address) + `&key=${ apiKey }`
+            }).then(function success(response){
+                console.log(response.data);
+            });
 
         },
 
@@ -18,13 +26,13 @@ export default ['$http', function($http){
 
             $http({
                 method: 'GET',
-                url: `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat}, ${lng}&key=${apiKey}`
+                url: `${ gmapsApiUrl }?latlng=${ lat }, ${ lng }&key=${ apiKey }`
             })
             .then(function success(response){
                 if(response.data.results.length > 0){
-                    console.log(response.data.results[0]);
+                    return response.data.results[0];
                 }
-            })
+            });
 
         },
 
@@ -42,6 +50,10 @@ export default ['$http', function($http){
                 radius: 50000/map.zoom
             }));
 
+        },
+
+        clearMarkers: () => {
+            markers = [];
         }
 
     }
