@@ -188,3 +188,12 @@ const MapUtilityServiceFactory = map => () => ({
         });
     }
 });
+
+                let rgeocode = GmapsService. reverseGeocode($scope.tweets[i].geo.coordinates[0], $scope.tweets[i].geo.coordinates[1]);
+                /*tweet = { tweet: $scope.tweets[i], location: {
+                    formatted_address: rgeocode.formatted_address,
+                    lat: rgeocode.geometry.location.lat,
+                    lng: rgeocode.geometry.location.lng
+                } };
+                */
+                //GmapsService.plot(window.map, ...$scope.tweets[i].geo.coordinates);

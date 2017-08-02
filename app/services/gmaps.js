@@ -9,29 +9,27 @@ export default ['$http', function($http){
 
         /*  returns the coordinates (lat, long) of the place using the Google Maps
         *   JavaScript API  */
-        geocode: address => {
+        geocode: (address, callbackFunction) => {
 
             $http({
                 method: 'GET',
                 url: `${ gmapsApiUrl }?address=` + encodeURIComponent(address) + `&key=${ apiKey }`
             }).then(function success(response){
-                console.log(response.data);
+                callbackFunction(response.data);
             });
 
         },
 
         /*  return the name of a place given the coordinates using the Google Maps
         *  JavaScript API   */
-        reverseGeocode: (lat, lng) => {
+        reverseGeocode: (lat, lng, callbackFunction) => {
 
             $http({
                 method: 'GET',
                 url: `${ gmapsApiUrl }?latlng=${ lat }, ${ lng }&key=${ apiKey }`
             })
             .then(function success(response){
-                if(response.data.results.length > 0){
-                    return response.data.results[0];
-                }
+                callbackFunction(response.data);
             });
 
         },

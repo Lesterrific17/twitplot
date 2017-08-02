@@ -8,9 +8,9 @@ export default ['$scope', 'TwitterService', 'GmapsService', function($scope, Twi
     $scope.searchParameters = [];
 
     $scope.locationSettings = [
-        { name: 'Twitter Geolocations', state: true },
-        { name: 'Associated Locations', state: true },
-        { name: 'User Locations',       state: true }
+        { name: 'Twitter Geolocations', state: true,    code: 'TG' },
+        { name: 'Associated Locations', state: true,    code: 'AL' },
+        { name: 'User Locations',       state: true,    code: 'UL' }
     ];
 
     $scope.refreshButton = { text: 'Refresh Tweets' };
@@ -53,10 +53,21 @@ export default ['$scope', 'TwitterService', 'GmapsService', function($scope, Twi
     $scope.refreshTweets = () => {
 
         if($scope.searchParameters.length > 0) {
+            $scope.tweets = [];
             tweetsPreloadSequence(true);
             getTweets();
         }
 
+    };
+
+    /*  watches for an changes in the location settings to refresh the app's data   */
+    $scope.$watch('locationSettings', function(){
+
+    }, true);
+
+    /*  TO BE IMPLEMENTED IN UI: Displays any error messages (string) to the user   */
+    const displayErrorMessage = errorMessage => {
+        console.log(errorMessage);
     };
 
     /*  manipulates the visuals for when the "refresh tweets" button is hit
@@ -101,37 +112,78 @@ export default ['$scope', 'TwitterService', 'GmapsService', function($scope, Twi
 
     };
 
-    const consolidateTweetLocations = tweets => {
-        $scope.tweets = tweets;
-        $scope.loadingLocations = true;
-        for(let i = 0; i < $scope.tweets.length; i++){
+    /*  Reconstructs a tweet object containing only the data needed by the application
+    *   along with the location data associated with it */
+    const makeTweet = (rawTweetData, locationData) => {
 
-            let tweet;
-
-            if($scope.tweets[i].geo !== null && $scope.locationSettings[0].state) {
-                let rgeocode = GmapsService.reverseGeocode($scope.tweets[i].geo.coordinates[0], $scope.tweets[i].geo.coordinates[1]);
-                tweet = { tweet: $scope.tweets[i], location: {
-                    formatted_address: rgeocode.formatted_address,
-                    lat: rgeocode.geometry.location.lat,
-                    lng: rgeocode.geometry.location.lng
-                } };
-                console.log(tweet);
-                //GmapsService.plot(window.map, ...$scope.tweets[i].geo.coordinates);
-            }
-            else if($scope.tweets[i].place !== null && $scope.locationSettings[1].state) {
-
-            }
-            else if($scope.tweets[i].user.location !== null && $scope.locationSettings[2].state) {
-                //console.log($scope.tweets[i].user.location);
-            }
+        return {
+            user:{
+                profile_image_url: rawTweetData.user.profile_image_url,
+                name: rawTweetData.user.name,
+                screen_name: rawTweetData.user.screen_name
+            },
+            text: rawTweetData.text,
+            entities: {
+                hashtags: rawTweetData.entities.hashtags
+            },
+            location: locationData
         }
-        $scope.loadingLocations = false;
 
     };
 
-    $scope.$watch('locationSettings', function(){
-        $scope.refreshTweets();
-    }, true);
+    /*  Retrieves any location-related data from each tweets and validates/processes them through
+    *   the Google Maps Geocoding APIs */
+    const processTweetLocations = rawTweets => {
+
+        $scope.loadingLocations = true;
+
+        for(let i = 0; i < rawTweets.length; i++){
+
+            /*  For tweets with the exact coordinates, use Google Maps API to retrieve the
+            *   full address of the coordinates.  */
+            if(rawTweets[i].geo !== null && $scope.locationSettings[0].state) {
+
+                GmapsService.reverseGeocode(rawTweets[i].geo.coordinates[0], rawTweets[i].geo.coordinates[1],
+                    function(responseData) {
+                        let tweet = makeTweet(rawTweets[i], {
+                            type: $scope.locationSettings[0].code,
+                            address: responseData.results[0].formatted_address,
+                            lat: responseData.results[0].geometry.location.lat,
+                            lng: responseData.results[0].geometry.location.lng
+                        });
+                        $scope.tweets.push(tweet);
+                });
+
+            }
+
+            /*  For tweets with associated places (addresses), use Google Maps API to retrieve
+            *   the coordinates (exact or approximate) of the addresses. */
+            else if(rawTweets[i].place !== null && $scope.locationSettings[1].state) {
+
+                GmapsService.geocode(rawTweets[i].place.full_name, function(responseData) {
+                    let tweet = makeTweet(rawTweets[i], {
+                        type: $scope.locationSettings[1].code,
+                        address: responseData.results[0].formatted_address,
+                        lat: responseData.results[0].geometry.location.lat,
+                        lng: responseData.results[0].geometry.location.lng
+                    });
+                    $scope.tweets.push(tweet);
+                });
+
+            }
+
+            /*  For tweets with user locations (not reliable and may not be locations at all), use the Gmaps
+            *   Service's filter() to roughly filter garbage data. For the remaining data, use Google Maps API to
+            *   retrieve the coordinates of the addresses (if they are valid). */
+            else if(rawTweets[i].user.location !== null && $scope.locationSettings[2].state) {
+
+            }
+
+        }
+
+        $scope.loadingLocations = false;
+
+    };
 
     /*  retrieves tweets relevant to the query string
      *  using Twitter's Search API   */
@@ -139,9 +191,10 @@ export default ['$scope', 'TwitterService', 'GmapsService', function($scope, Twi
 
         TwitterService.searchTweets(getQueryString(), $scope.tweetCount).then(function(data) {
             tweetsPreloadSequence(false);
-            consolidateTweetLocations(data.statuses);
+            processTweetLocations(data.statuses);
         }, function() {
             /*  put error msg here */
+            displayErrorMessage('Tweet search was not successful.');
         });
 
     };

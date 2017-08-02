@@ -475,6 +475,7 @@ div.off > div{
 
 div.tweet-location-box{
     margin: 10px 0 0 20%;
+    max-width: 80%;
     float: left;
     height: 25px;
     background-color: rgb(240, 240, 240);
