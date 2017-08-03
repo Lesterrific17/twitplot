@@ -68,7 +68,7 @@
     <div class="app-id-gutter"></div>
     <div id="search-result-info">Found <b> {{ tweets.length }} </b> Tweets</div>
     <div id="tweets-list">
-        <div class="tweet-box" ng-repeat="tweet in tweets">
+        <div class="tweet-box" ng-repeat="tweet in tweets | filter:tweetFilter:true track by tweet.id">
             <div class="user-head">
                 <div class="col-20">
                     <div class="user-avatar" style="background-image: url({{ tweet.user.profile_image_url }})"></div>

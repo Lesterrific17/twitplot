@@ -24,8 +24,7 @@ export default ['$http', function($http){
                     strokeWeight: 40,
                     strokeOpacity: 0.7
                 },
-                map: map,
-                tweet: null
+                map: map
             });
 
         },
@@ -46,30 +45,34 @@ export default ['$http', function($http){
 
         /*  returns the coordinates (lat, long) of the place using the Google Maps
         *   JavaScript API  */
-        geocode: (address, callbackFunction) => {
-
-            $http({
-                method: 'GET',
-                url: `${ gmapsApiUrl }?address=` + encodeURIComponent(address) + `&key=${ apiKey }`
-            }).then(function success(response){
-                callbackFunction(response.data);
+        geocode: (address) => {
+            return new Promise((resolve, reject) => {
+              $http({
+                  method: 'GET',
+                  url: `${ gmapsApiUrl }?address=` + encodeURIComponent(address) + `&key=${ apiKey }`
+              })
+              .then(response => {
+                  resolve(response.data.results[0]);
+              })
+              .catch(reject);
             });
-
         },
 
         /*  return the name of a place given the coordinates using the Google Maps
         *  JavaScript API   */
-        reverseGeocode: (lat, lng, callbackFunction) => {
-
+        reverseGeocode: (coordinates) => {
+          let [lat, lng] = coordinates;
+          return new Promise((resolve, reject) => {
             $http({
                 method: 'GET',
                 url: `${ gmapsApiUrl }?latlng=${ lat }, ${ lng }&key=${ apiKey }`
             })
-            .then(function success(response){
-                callbackFunction(response.data);
-            });
-
-        },
+            .then(response => {
+                resolve(response.data.results[0]);
+            })
+            .catch(reject);
+          });
+        }
 
     }
 

@@ -1,5 +1,5 @@
 
-export default ['$scope', 'TwitterService', 'GmapsService', function($scope, TwitterService, GmapsService) {
+export default function($scope, $timeout, TwitterService, GmapsService, TweetService) {
 
     $scope.locations = [];
     $scope.tweets = [];
@@ -146,60 +146,37 @@ export default ['$scope', 'TwitterService', 'GmapsService', function($scope, Twi
 
     /*  Retrieves any location-related data from each tweets and validates/processes them through
     *   the Google Maps Geocoding APIs */
-    const processTweetLocations = rawTweets => {
+    const processTweets = rawTweets => {
+      $scope.loadingLocations = true;
 
-        $scope.loadingLocations = true;
-
-        for(let i = 0; i < rawTweets.length; i++){
-
-            /*  For tweets with the exact coordinates, use Google Maps API to retrieve the
-            *   full address of the coordinates.  */
-            if(rawTweets[i].geo !== null) {
-
-                GmapsService.reverseGeocode(rawTweets[i].geo.coordinates[0], rawTweets[i].geo.coordinates[1],
-                    function(responseData) {
-                        let tweet = makeTweet(rawTweets[i], {
-                            type: 0,
-                            address: responseData.results[0].formatted_address,
-                            marker: GmapsService.createMarker(map, responseData.results[0].geometry.location.lat, responseData.results[0].geometry.location.lng),
-                            lat: responseData.results[0].geometry.location.lat,
-                            lng: responseData.results[0].geometry.location.lng
-                        });
-                        $scope.tweets.push(tweet);
+      TweetService.makeTweets(rawTweets)
+        .then(tweets => {
+          $timeout(() => {
+            $scope.tweets = tweets;
+            $scope.tweets.forEach(tweet => {
+              tweet.location.marker.addListener('click', () => {
+                $timeout(() => {
+                  $scope.tweetFilter = { id: tweet.id };
                 });
-
-            }
-
-            /*  For tweets with associated places (addresses), use Google Maps API to retrieve
-            *   the coordinates (exact or approximate) of the addresses. */
-            else if(rawTweets[i].place !== null) {
-
-                GmapsService.geocode(rawTweets[i].place.full_name, function(responseData) {
-                    let tweet = makeTweet(rawTweets[i], {
-                        type: 1,
-                        address: responseData.results[0].formatted_address,
-                        marker: GmapsService.createMarker(map, responseData.results[0].geometry.location.lat, responseData.results[0].geometry.location.lng),
-                        lat: responseData.results[0].geometry.location.lat,
-                        lng: responseData.results[0].geometry.location.lng
-                    });
-                    $scope.tweets.push(tweet);
-                });
-
-            }
-
-        }
-
-        $scope.loadingLocations = false;
-
-    };
+              });
+            });
+            $scope.loadingLocations = false;
+            tweetsPreloadSequence(false);
+          });
+        })
+        .catch(response => {
+          // todo
+          $scope.loadingLocations = false;
+        });
+    }
 
     /*  retrieves tweets relevant to the query string
      *  using Twitter's Search API   */
     const getTweets = () => {
 
         TwitterService.searchTweets(getQueryString(), $scope.tweetCount).then(function(data) {
-            tweetsPreloadSequence(false);
-            processTweetLocations(data.statuses);
+            tweetsPreloadSequence(true);
+            processTweets(data.statuses);
         }, function() {
             /*  put error msg here */
             displayErrorMessage('Tweet search was not successful.');
@@ -230,4 +207,4 @@ export default ['$scope', 'TwitterService', 'GmapsService', function($scope, Twi
     /*  runs the start-up code of MainController */
     activate();
 
-}];
+};

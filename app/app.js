@@ -9,6 +9,7 @@ import './styles/twitplot.css';
 import MainController from './controllers/main';
 import TwitterService from './services/twitter';
 import GmapsService from './services/gmaps';
+import TweetService from './services/tweet';
 import toggleSettingDirective from './directives/toggleSetting';
 import toggleDirective from './directives/toggle';
 
@@ -19,6 +20,7 @@ var app = angular.module('Twitplot', ['ngSanitize'])
     .controller('MainController', MainController)
     .factory('TwitterService', TwitterService)
     .factory('GmapsService', GmapsService)
+    .service('TweetService', TweetService)
     .directive('toggleSetting', toggleSettingDirective)
     .directive('toggle', toggleDirective);
 
