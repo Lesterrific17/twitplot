@@ -64,7 +64,7 @@ div.preloader-overlay {
     height: 100%;
     width: 100%;
     background-color: rgba(255, 255, 255, 0.9);
-    z-index: 100;
+    z-index: 300;
 }
 
 div.inactive{
@@ -118,13 +118,43 @@ div.inactive{
     100%{ -moz-transform: rotate(360deg); transform: rotate(360deg); }
 }
 
+#map-hint-flash{
+    position: absolute;
+    margin: auto;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 200;
+    height: 10%;
+    width: 50%;
+    text-align: center;
+}
+
+#map-hint-flash > div{
+    display: inline;
+    font-size: 3.5em;
+    font-weight: bold;
+    word-wrap: normal;
+    padding: 20px 30px 20px 30px;
+    text-align: center;
+    background-color: #000000;
+    opacity: 0.4;
+    color: white;
+}
+
 #map-canvas{
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: 0;
+}
+
+#map-container{
     position: relative;
     margin-left: 600px;
     height: 100%;
-    background-color: white;
-    border-left: 1px solid rgb(200, 200, 200);
-    z-index: 100;
+    border-left: 1px solid rgb(220, 220, 220);
 }
 
 #twitplot-data{
@@ -501,4 +531,36 @@ div.tweet-location-text{
     font-size: 0.85em;
     color: indianred;
     max-width: 85%;
+}
+
+div.bar-selector{
+    border: 1px solid seagreen;
+    margin: 15px 5% 0 5%;
+    height: 25px;
+    display: table;
+    width: 90%;
+}
+
+div.bar-selector > div.bar-selector-entry{
+    width: auto;
+    display: table-cell;
+    text-align: center;
+    color: seagreen;
+    font-size: 0.8em;
+    padding-top: 5px;
+    font-weight: lighter;
+    cursor: pointer;
+}
+
+div.bar-selector > div.bar-selector-entry:hover{
+    background-color: rgb(240, 240, 240);
+}
+
+div.bar-selector > div.selected{
+    background-color: seagreen;
+    color: white;
+}
+
+div.bar-selector > div.selected:hover{
+    background-color: seagreen;
 }

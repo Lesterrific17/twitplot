@@ -9,7 +9,7 @@ export default () => ({
     link: (scope, element, attr, ngModel) => {
       ngModel.$render = () => {
         scope.setting = ngModel.$modelValue;
-      }
+      };
       scope.$watch('setting.state', () => {
         ngModel.$setViewValue(ngModel.$modelValue);
       })

@@ -8,15 +8,16 @@ export default ['$scope', 'TwitterService', 'GmapsService', function($scope, Twi
     $scope.searchParameters = [];
 
     $scope.locationSettings = [
-        { name: 'Twitter Geolocations', state: true,    code: 'TG' },
-        { name: 'Associated Locations', state: true,    code: 'AL' },
-        { name: 'User Locations',       state: true,    code: 'UL' }
+        { name: 'Twitter Geolocations', state: true, },
+        { name: 'Associated Locations', state: true, }
     ];
 
     $scope.refreshButton = { text: 'Refresh Tweets' };
 
     $scope.loadingTweets = false;
     $scope.loadingLocations = false;
+    $scope.showMapFlash = false;
+    $scope.mapFlashText = 'Zoom Level: 6x';
 
     /*  deletes a search parameter given its index in the parameters array  */
     $scope.deleteSearchParam = value => {
@@ -62,8 +63,20 @@ export default ['$scope', 'TwitterService', 'GmapsService', function($scope, Twi
 
     /*  watches for an changes in the location settings to refresh the app's data   */
     $scope.$watch('locationSettings', function(){
-
+        $scope.tweets.forEach(function (tweet, index) {
+            if($scope.locationSettings[tweet.location.type].state === true){
+                tweet.location.marker.setMap(map);
+            }
+            else{
+                tweet.location.marker.setMap(null);
+            }
+        });
     }, true);
+
+    /*  centers and zooms the map on a location */
+    $scope.viewLocation = (marker, address) => {
+        GmapsService.setMapCenter(map, marker, address);
+    };
 
     /*  TO BE IMPLEMENTED IN UI: Displays any error messages (string) to the user   */
     const displayErrorMessage = errorMessage => {
@@ -141,13 +154,14 @@ export default ['$scope', 'TwitterService', 'GmapsService', function($scope, Twi
 
             /*  For tweets with the exact coordinates, use Google Maps API to retrieve the
             *   full address of the coordinates.  */
-            if(rawTweets[i].geo !== null && $scope.locationSettings[0].state) {
+            if(rawTweets[i].geo !== null) {
 
                 GmapsService.reverseGeocode(rawTweets[i].geo.coordinates[0], rawTweets[i].geo.coordinates[1],
                     function(responseData) {
                         let tweet = makeTweet(rawTweets[i], {
-                            type: $scope.locationSettings[0].code,
+                            type: 0,
                             address: responseData.results[0].formatted_address,
+                            marker: GmapsService.createMarker(map, responseData.results[0].geometry.location.lat, responseData.results[0].geometry.location.lng),
                             lat: responseData.results[0].geometry.location.lat,
                             lng: responseData.results[0].geometry.location.lng
                         });
@@ -158,24 +172,18 @@ export default ['$scope', 'TwitterService', 'GmapsService', function($scope, Twi
 
             /*  For tweets with associated places (addresses), use Google Maps API to retrieve
             *   the coordinates (exact or approximate) of the addresses. */
-            else if(rawTweets[i].place !== null && $scope.locationSettings[1].state) {
+            else if(rawTweets[i].place !== null) {
 
                 GmapsService.geocode(rawTweets[i].place.full_name, function(responseData) {
                     let tweet = makeTweet(rawTweets[i], {
-                        type: $scope.locationSettings[1].code,
+                        type: 1,
                         address: responseData.results[0].formatted_address,
+                        marker: GmapsService.createMarker(map, responseData.results[0].geometry.location.lat, responseData.results[0].geometry.location.lng),
                         lat: responseData.results[0].geometry.location.lat,
                         lng: responseData.results[0].geometry.location.lng
                     });
                     $scope.tweets.push(tweet);
                 });
-
-            }
-
-            /*  For tweets with user locations (not reliable and may not be locations at all), use the Gmaps
-            *   Service's filter() to roughly filter garbage data. For the remaining data, use Google Maps API to
-            *   retrieve the coordinates of the addresses (if they are valid). */
-            else if(rawTweets[i].user.location !== null && $scope.locationSettings[2].state) {
 
             }
 

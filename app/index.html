@@ -46,6 +46,15 @@
             <toggle-setting ng-model="setting"></toggle-setting>
           </div>
         </div>
+        <div class="sub-control-header">SCROLL WHEEL</div>
+        <div class="conf-list-container">
+            <div class="conf-entry">
+                <div class="bar-selector">
+                    <div class="bar-selector-entry selected">Map Zoom</div>
+                    <div class="bar-selector-entry">Marker Size</div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -74,7 +83,7 @@
                 <br/>
                 <span class="hashtags" ng-repeat="hashtag in tweet.entities.hashtags">#{{ hashtag.text }} </span>
             </div>
-            <div class="tweet-location-box" ng-title="tweet.location.address">
+            <div class="tweet-location-box" ng-click="viewLocation(tweet.location.marker, tweet.location.address)">
                 <div class="icon-container tweet-location-icon">
                     <img src="images/location.svg"/>
                 </div>
@@ -84,13 +93,14 @@
     </div>
 </div>
 
-<div id="map-canvas">
+<div id="map-container">
     <div class="preloader-overlay" ng-if="loadingLocations">
         <div class="cssload-container">
             <div class="cssload-speeding-wheel"></div>
         </div>
     </div>
-
+    <div id="map-hint-flash" ng-if="showMapFlash"><div>{{ mapFlashText }}</div></div>
+    <div id="map-canvas" ng-scroll="test()"></div>
 </div>
 
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-cq1BDG40iEVQG3Bm6rCc5X2yMSvlYPc&callback=initMap"></script>

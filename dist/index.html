@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en" ng-app="Twitplot">
+<head>
+    <meta charset="utf-8">
+    <title>Twitplot</title>
+<script type="text/javascript" src="bundle.js"></script></head>
+<body ng-controller="MainController">
+
+<div id="twitplot-controls">
+    <div id="app-id">Twitplot</div>
+    <div class="app-id-gutter"></div>
+
+    <div class="control-header">
+        <div class="control-icon icon-container"><img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0nMS4wJyBlbmNvZGluZz0ndXRmLTgnPz4KPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmlld0JveD0iMCAwIDEyOSAxMjkiIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiBlbmFibGUtYmFja2dyb3VuZD0ibmV3IDAgMCAxMjkgMTI5Ij4KICA8Zz4KICAgIDxwYXRoIGZpbGw9IiM1MDUwNTAiIGQ9Ik01MS42LDk2LjdjMTEsMCwyMS0zLjksMjguOC0xMC41bDM1LDM1YzAuOCwwLjgsMS44LDEuMiwyLjksMS4yczIuMS0wLjQsMi45LTEuMmMxLjYtMS42LDEuNi00LjIsMC01LjhsLTM1LTM1ICAgYzYuNS03LjgsMTAuNS0xNy45LDEwLjUtMjguOGMwLTI0LjktMjAuMi00NS4xLTQ1LjEtNDUuMUMyNi44LDYuNSw2LjUsMjYuOCw2LjUsNTEuNkM2LjUsNzYuNSwyNi44LDk2LjcsNTEuNiw5Ni43eiBNNTEuNiwxNC43ICAgYzIwLjQsMCwzNi45LDE2LjYsMzYuOSwzNi45Qzg4LjUsNzIsNzIsODguNSw1MS42LDg4LjVjLTIwLjQsMC0zNi45LTE2LjYtMzYuOS0zNi45QzE0LjcsMzEuMywzMS4zLDE0LjcsNTEuNiwxNC43eiIvPgogIDwvZz4KPC9zdmc+Cg=="/></div>
+        <div class="control-label">Search Parameters</div>
+    </div>
+
+    <div class="control-content">
+        <div id="search-div">
+            <div ng-repeat="q in searchParameters track by $index" class="search-entry {{ q.type }}-search" ng-class="">
+                <div class="icon-container search-entry-x" ng-click="deleteSearchParam($index)">
+                    <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTguMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDE4MC42MDcgMTgwLjYwNyIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMTgwLjYwNyAxODAuNjA3OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgd2lkdGg9IjUxMnB4IiBoZWlnaHQ9IjUxMnB4Ij4KPHBhdGggZD0iTTE4MC42MDcsMTAuNjA3bC03OS42OTYsNzkuNjk3bDc5LjY5Niw3OS42OTdMMTcwLDE4MC42MDdsLTc5LjY5Ni03OS42OTZsLTc5LjY5Niw3OS42OTZMMCwxNzAuMDAxbDc5LjY5Ni03OS42OTdMMCwxMC42MDcgIEwxMC42MDcsMC4wMDFsNzkuNjk2LDc5LjY5NkwxNzAsMC4wMDFMMTgwLjYwNywxMC42MDd6IiBmaWxsPSIjRkZGRkZGIi8+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+Cjwvc3ZnPgo="/>
+                </div>
+                <div class="search-entry-text">{{ q.entry }}</div>
+            </div>
+            <form ng-submit="validateSearchParam()" id="sparam-form">
+                <input id="search-param-input" type="text" placeholder="Add Parameter" ng-model="inputParameter"/>
+            </form>
+            <div class="content-gutter"></div>
+        </div>
+        <div id="refresh-box">
+            <input type="button" class="generic-button" ng-class="[loadingTweets === true || searchParameters.length === 0 ? 'inactive' : '']" ng-click="refreshTweets()" ng-value="refreshButton.text"/>
+        </div>
+    </div>
+
+    <div class="control-header">
+        <div class="control-icon icon-container">
+            <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pg0KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDE4LjEuMSwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPg0KPHN2ZyB2ZXJzaW9uPSIxLjEiIGlkPSJDYXBhXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4Ig0KCSB2aWV3Qm94PSIwIDAgMjY4Ljc2NSAyNjguNzY1IiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCAyNjguNzY1IDI2OC43NjU7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxnIGlkPSJTZXR0aW5ncyI+DQoJPGc+DQoJCTxwYXRoIGZpbGw9IiM1MDUwNTAiIHN0eWxlPSJmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDsiIGQ9Ik0yNjcuOTIsMTE5LjQ2MWMtMC40MjUtMy43NzgtNC44My02LjYxNy04LjYzOS02LjYxNw0KCQkJYy0xMi4zMTUsMC0yMy4yNDMtNy4yMzEtMjcuODI2LTE4LjQxNGMtNC42ODItMTEuNDU0LTEuNjYzLTI0LjgxMiw3LjUxNS0zMy4yMzFjMi44ODktMi42NDEsMy4yNC03LjA2MiwwLjgxNy0xMC4xMzMNCgkJCWMtNi4zMDMtOC4wMDQtMTMuNDY3LTE1LjIzNC0yMS4yODktMjEuNWMtMy4wNjMtMi40NTgtNy41NTctMi4xMTYtMTAuMjEzLDAuODI1Yy04LjAxLDguODcxLTIyLjM5OCwxMi4xNjgtMzMuNTE2LDcuNTI5DQoJCQljLTExLjU3LTQuODY3LTE4Ljg2Ni0xNi41OTEtMTguMTUyLTI5LjE3NmMwLjIzNS0zLjk1My0yLjY1NC03LjM5LTYuNTk1LTcuODQ5Yy0xMC4wMzgtMS4xNjEtMjAuMTY0LTEuMTk3LTMwLjIzMi0wLjA4DQoJCQljLTMuODk2LDAuNDMtNi43ODUsMy43ODYtNi42NTQsNy42ODljMC40MzgsMTIuNDYxLTYuOTQ2LDIzLjk4LTE4LjQwMSwyOC42NzJjLTEwLjk4NSw0LjQ4Ny0yNS4yNzIsMS4yMTgtMzMuMjY2LTcuNTc0DQoJCQljLTIuNjQyLTIuODk2LTcuMDYzLTMuMjUyLTEwLjE0MS0wLjg1M2MtOC4wNTQsNi4zMTktMTUuMzc5LDEzLjU1NS0yMS43NCwyMS40OTNjLTIuNDgxLDMuMDg2LTIuMTE2LDcuNTU5LDAuODAyLDEwLjIxNA0KCQkJYzkuMzUzLDguNDcsMTIuMzczLDIxLjk0NCw3LjUxNCwzMy41M2MtNC42MzksMTEuMDQ2LTE2LjEwOSwxOC4xNjUtMjkuMjQsMTguMTY1Yy00LjI2MS0wLjEzNy03LjI5NiwyLjcyMy03Ljc2Miw2LjU5Nw0KCQkJYy0xLjE4MiwxMC4wOTYtMS4xOTYsMjAuMzgzLTAuMDU4LDMwLjU2MWMwLjQyMiwzLjc5NCw0Ljk2MSw2LjYwOCw4LjgxMiw2LjYwOGMxMS43MDItMC4yOTksMjIuOTM3LDYuOTQ2LDI3LjY1LDE4LjQxNQ0KCQkJYzQuNjk4LDExLjQ1NCwxLjY3OCwyNC44MDQtNy41MTQsMzMuMjNjLTIuODc1LDIuNjQxLTMuMjQsNy4wNTUtMC44MTcsMTAuMTI2YzYuMjQ0LDcuOTUzLDEzLjQwOSwxNS4xOSwyMS4yNTksMjEuNTA4DQoJCQljMy4wNzksMi40ODEsNy41NTksMi4xMzEsMTAuMjI4LTAuODFjOC4wNC04Ljg5MywyMi40MjctMTIuMTg0LDMzLjUwMS03LjUzNmMxMS41OTksNC44NTIsMTguODk1LDE2LjU3NSwxOC4xODEsMjkuMTY3DQoJCQljLTAuMjMzLDMuOTU1LDIuNjcsNy4zOTgsNi41OTUsNy44NWM1LjEzNSwwLjU5OSwxMC4zMDEsMC44OTgsMTUuNDgxLDAuODk4YzQuOTE3LDAsOS44MzUtMC4yNywxNC43NTItMC44MTcNCgkJCWMzLjg5Ny0wLjQzLDYuNzg0LTMuNzg2LDYuNjUzLTcuNjk2Yy0wLjQ1MS0xMi40NTQsNi45NDYtMjMuOTczLDE4LjM4Ni0yOC42NTdjMTEuMDU5LTQuNTE3LDI1LjI4Ni0xLjIxMSwzMy4yODEsNy41NzINCgkJCWMyLjY1NywyLjg5LDcuMDQ3LDMuMjM5LDEwLjE0MiwwLjg0OGM4LjAzOS02LjMwNCwxNS4zNDktMTMuNTM0LDIxLjc0LTIxLjQ5NGMyLjQ4LTMuMDc5LDIuMTMtNy41NTktMC44MDMtMTAuMjEzDQoJCQljLTkuMzUzLTguNDctMTIuMzg4LTIxLjk0Ni03LjUyOS0zMy41MjRjNC41NjgtMTAuODk5LDE1LjYxMi0xOC4yMTcsMjcuNDkxLTE4LjIxN2wxLjY2MiwwLjA0Mw0KCQkJYzMuODUzLDAuMzEzLDcuMzk4LTIuNjU1LDcuODY1LTYuNTg4QzI2OS4wNDQsMTM5LjkxNywyNjkuMDU4LDEyOS42MzksMjY3LjkyLDExOS40NjF6IE0xMzQuNTk1LDE3OS40OTENCgkJCWMtMjQuNzE4LDAtNDQuODI0LTIwLjEwNi00NC44MjQtNDQuODI0YzAtMjQuNzE3LDIwLjEwNi00NC44MjQsNDQuODI0LTQ0LjgyNGMyNC43MTcsMCw0NC44MjMsMjAuMTA3LDQ0LjgyMyw0NC44MjQNCgkJCUMxNzkuNDE4LDE1OS4zODUsMTU5LjMxMiwxNzkuNDkxLDEzNC41OTUsMTc5LjQ5MXoiLz4NCgk8L2c+DQo8L2c+DQo8L3N2Zz4NCg=="/>
+        </div>
+        <div class="control-label">Settings</div>
+    </div>
+    <div class="control-content">
+        <div class="sub-control-header">WHAT TO PLOT</div>
+        <div class="conf-list-container">
+          <div ng-repeat="setting in locationSettings">
+            <toggle-setting ng-model="setting"></toggle-setting>
+          </div>
+        </div>
+        <div class="sub-control-header">SCROLL WHEEL</div>
+        <div class="conf-list-container">
+            <div class="conf-entry">
+                <div class="bar-selector">
+                    <div class="bar-selector-entry selected">Map Zoom</div>
+                    <div class="bar-selector-entry">Marker Size</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="twitplot-data">
+    <div class="preloader-overlay" ng-if="loadingTweets">
+        <div class="cssload-container">
+            <div class="cssload-speeding-wheel"></div>
+        </div>
+    </div>
+    <div id="data-header">SEARCH RESULTS</div>
+    <div class="app-id-gutter"></div>
+    <div id="search-result-info">Found <b> {{ tweets.length }} </b> Tweets</div>
+    <div id="tweets-list">
+        <div class="tweet-box" ng-repeat="tweet in tweets">
+            <div class="user-head">
+                <div class="col-20">
+                    <div class="user-avatar" style="background-image: url({{ tweet.user.profile_image_url }})"></div>
+                </div>
+                <div class="col-80">
+                    <div><b>{{ tweet.user.name }}</b></div>
+                    <div class="user-handle">@{{ tweet.user.screen_name }}</div>
+                </div>
+            </div>
+            <div class="tweet-body">
+                {{ tweet.text }}
+                <br/>
+                <span class="hashtags" ng-repeat="hashtag in tweet.entities.hashtags">#{{ hashtag.text }} </span>
+            </div>
+            <div class="tweet-location-box" ng-click="viewLocation(tweet.location.lat, tweet.location.lng)">
+                <div class="icon-container tweet-location-icon">
+                    <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjUxMnB4IiBoZWlnaHQ9IjUxMnB4IiB2aWV3Qm94PSIwIDAgOTcuNzEzIDk3LjcxMyIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgOTcuNzEzIDk3LjcxMzsiIHhtbDpzcGFjZT0icHJlc2VydmUiPgo8Zz4KCTxwYXRoIGQ9Ik00OC44NTUsMEMyOS4wMjEsMCwxMi44ODMsMTYuMTM4LDEyLjg4MywzNS45NzRjMCw1LjE3NCwxLjA1OSwxMC4xMTQsMy4xNDYsMTQuNjg0ICAgYzguOTk0LDE5LjY4MSwyNi4yMzgsNDAuNDYsMzEuMzEsNDYuMzU5YzAuMzgsMC40NDEsMC45MzQsMC42OTUsMS41MTcsMC42OTVzMS4xMzctMC4yNTQsMS41MTctMC42OTUgICBjNS4wNy01Ljg5OCwyMi4zMTQtMjYuNjc2LDMxLjMxMS00Ni4zNTljMi4wODgtNC41NywzLjE0Ni05LjUxLDMuMTQ2LTE0LjY4NEM4NC44MjgsMTYuMTM4LDY4LjY5LDAsNDguODU1LDB6IE00OC44NTUsNTQuNjU5ICAgYy0xMC4zMDMsMC0xOC42ODYtOC4zODMtMTguNjg2LTE4LjY4NmMwLTEwLjMwNCw4LjM4My0xOC42ODcsMTguNjg2LTE4LjY4N3MxOC42ODYsOC4zODMsMTguNjg2LDE4LjY4NyAgIEM2Ny41NDIsNDYuMjc2LDU5LjE1OSw1NC42NTksNDguODU1LDU0LjY1OXoiIGZpbGw9ImluZGlhbnJlZCIvPgo8L2c+Cjwvc3ZnPgo="/>
+                </div>
+                <div class="tweet-location-text">{{ tweet.location.address }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="map-container">
+    <div class="preloader-overlay" ng-if="loadingLocations">
+        <div class="cssload-container">
+            <div class="cssload-speeding-wheel"></div>
+        </div>
+    </div>
+    <div id="map-hint-flash" ng-if="showMapFlash"><div>{{ mapFlashText }}</div></div>
+    <div id="map-canvas" ng-scroll="test()"></div>
+</div>
+
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-cq1BDG40iEVQG3Bm6rCc5X2yMSvlYPc&callback=initMap"></script>
+</body>
+</html>

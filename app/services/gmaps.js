@@ -7,6 +7,43 @@ export default ['$http', function($http){
 
     return{
 
+        /*  clears the markers array (also clears any markers from the map) */
+        clearMarkers: () => {
+            markers = [];
+        },
+
+        /*  puts a marker on a map corresponding to the given coordinate */
+        createMarker: (map, lat, lng) => {
+
+            return new google.maps.Marker({
+                position: new google.maps.LatLng(lat, lng),
+                icon: {
+                    path: 'M-10,0a10,10 0 1,0 20,0a10,10 0 1,0 -20,0',
+                    scale: 2,
+                    strokeColor: 'indianred',
+                    strokeWeight: 40,
+                    strokeOpacity: 0.7
+                },
+                map: map,
+                tweet: null
+            });
+
+        },
+
+        /*  zooms in dead center to a location on a map */
+        setMapCenter: (map, marker, address) => {
+
+            let infoWindow = new google.maps.InfoWindow({
+                content: `<h3>${ address }</h3>`
+            });
+            setTimeout(function () { infoWindow.close(); }, 5000)
+
+            map.setZoom(14);
+            map.panTo(marker.position);
+            infoWindow.open(map, marker);
+
+        },
+
         /*  returns the coordinates (lat, long) of the place using the Google Maps
         *   JavaScript API  */
         geocode: (address, callbackFunction) => {
@@ -33,26 +70,6 @@ export default ['$http', function($http){
             });
 
         },
-
-        /*  puts a marker on a map corresponding to the given coordinate */
-        plot: (map, lat, lng) => {
-
-            markers.push(new google.maps.Circle({
-                strokeColor: '#FF0000',
-                strokeOpacity: 0.8,
-                strokeWeight: 2,
-                fillColor: '#FF0000',
-                fillOpacity: 0.35,
-                map: map,
-                center: { lat: lat, lng: lng },
-                radius: 50000/map.zoom
-            }));
-
-        },
-
-        clearMarkers: () => {
-            markers = [];
-        }
 
     }
 
