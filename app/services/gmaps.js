@@ -3,14 +3,8 @@ export default ['$http', function($http){
 
     let gmapsApiUrl = 'https://maps.googleapis.com/maps/api/geocode/json';
     let apiKey = 'AIzaSyA-cq1BDG40iEVQG3Bm6rCc5X2yMSvlYPc';
-    let markers = [];
 
     return{
-
-        /*  clears the markers array (also clears any markers from the map) */
-        clearMarkers: () => {
-            markers = [];
-        },
 
         /*  puts a marker on a map corresponding to the given coordinate */
         createMarker: (map, lat, lng) => {
@@ -72,7 +66,14 @@ export default ['$http', function($http){
             })
             .catch(reject);
           });
-        }
+        },
+
+        /*  */
+        deEmphasizeMarker: marker => {
+            marker.icon.strokeOpacity = 0.2;
+        },
+
+
 
     }
 

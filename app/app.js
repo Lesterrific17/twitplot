@@ -20,7 +20,7 @@ var app = angular.module('Twitplot', ['ngSanitize'])
     .controller('MainController', MainController)
     .factory('TwitterService', TwitterService)
     .factory('GmapsService', GmapsService)
-    .service('TweetService', TweetService)
+    .factory('TweetService', TweetService)
     .directive('toggleSetting', toggleSettingDirective)
     .directive('toggle', toggleDirective);
 

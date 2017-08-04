@@ -1,7 +1,6 @@
 
 export default function($scope, $timeout, TwitterService, GmapsService, TweetService) {
 
-    $scope.locations = [];
     $scope.tweets = [];
     $scope.tweetCount = 50;
 
@@ -16,6 +15,7 @@ export default function($scope, $timeout, TwitterService, GmapsService, TweetSer
 
     $scope.loadingTweets = false;
     $scope.loadingLocations = false;
+
     $scope.showMapFlash = false;
     $scope.mapFlashText = 'Zoom Level: 6x';
 
@@ -55,7 +55,7 @@ export default function($scope, $timeout, TwitterService, GmapsService, TweetSer
 
         if($scope.searchParameters.length > 0) {
             $scope.tweets = [];
-            tweetsPreloadSequence(true);
+            $scope.loadingTweets = true;
             getTweets();
         }
 
@@ -73,6 +73,10 @@ export default function($scope, $timeout, TwitterService, GmapsService, TweetSer
         });
     }, true);
 
+    $scope.$watch('loadingTweets', function() {
+        tweetsPreloadSequence($scope.loadingTweets);
+    });
+
     /*  centers and zooms the map on a location */
     $scope.viewLocation = (marker, address) => {
         GmapsService.setMapCenter(map, marker, address);
@@ -86,16 +90,14 @@ export default function($scope, $timeout, TwitterService, GmapsService, TweetSer
     /*  manipulates the visuals for when the "refresh tweets" button is hit
     *   and after the tweets have been fetched from Twitter
     *   accepts a boolean flag for "on" or "off" */
-    const tweetsPreloadSequence = flag => {
+    const tweetsPreloadSequence = loadingTweets => {
 
-        if(flag){
+        if(loadingTweets){
             $scope.refreshButton.text = 'Refreshing...';
-            $scope.loadingTweets = true;
             $('#twitplot-data').scrollTop(0);
         }
         else{
             $scope.refreshButton.text = 'Refresh Tweets';
-            $scope.loadingTweets = false;
         }
 
     };
@@ -125,57 +127,43 @@ export default function($scope, $timeout, TwitterService, GmapsService, TweetSer
 
     };
 
-    /*  Reconstructs a tweet object containing only the data needed by the application
-    *   along with the location data associated with it */
-    const makeTweet = (rawTweetData, locationData) => {
-
-        return {
-            user:{
-                profile_image_url: rawTweetData.user.profile_image_url,
-                name: rawTweetData.user.name,
-                screen_name: rawTweetData.user.screen_name
-            },
-            text: rawTweetData.text,
-            entities: {
-                hashtags: rawTweetData.entities.hashtags
-            },
-            location: locationData
-        }
-
+    const addMarkerEventListeners = appTweets => {
+        appTweets.forEach(tweet => {
+            tweet.location.marker.addListener('click', () => {
+                $timeout(() => {
+                    $scope.tweetFilter = { id: tweet.id };
+                    $scope.viewLocation(tweet.location.marker, tweet.location.address);
+                });
+            });
+        });
     };
 
     /*  Retrieves any location-related data from each tweets and validates/processes them through
     *   the Google Maps Geocoding APIs */
     const processTweets = rawTweets => {
-      $scope.loadingLocations = true;
 
-      TweetService.makeTweets(rawTweets)
-        .then(tweets => {
-          $timeout(() => {
-            $scope.tweets = tweets;
-            $scope.tweets.forEach(tweet => {
-              tweet.location.marker.addListener('click', () => {
+        $scope.loadingLocations = true;
+
+        TweetService.makeAppTweets(rawTweets)
+            .then(appTweets => {
                 $timeout(() => {
-                  $scope.tweetFilter = { id: tweet.id };
+                    $scope.tweets = appTweets;
+                    addMarkerEventListeners($scope.tweets);
                 });
-              });
-            });
-            $scope.loadingLocations = false;
-            tweetsPreloadSequence(false);
-          });
-        })
-        .catch(response => {
-          // todo
-          $scope.loadingLocations = false;
-        });
-    }
+                $scope.loadingLocations = false;
+                $scope.loadingTweets = false;
+            })
+            .catch(() => {
+                // todo
+            })
+
+    };
 
     /*  retrieves tweets relevant to the query string
      *  using Twitter's Search API   */
     const getTweets = () => {
 
         TwitterService.searchTweets(getQueryString(), $scope.tweetCount).then(function(data) {
-            tweetsPreloadSequence(true);
             processTweets(data.statuses);
         }, function() {
             /*  put error msg here */

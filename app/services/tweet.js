@@ -1,53 +1,73 @@
-export default function(GmapsService) {
+export default ['GmapsService', function (GmapsService) {
 
-  this.makeTweets = rawTweets => {
-    return new Promise((resolve, reject) => {
-      let promises = [];
-      let tweets = [];
+    return {
 
-      rawTweets.forEach(rawTweet => {
-        if (rawTweet.geo || rawTweet.place) {
-          let tweet = {
-              user:{
-                  profile_image_url: rawTweet.user.profile_image_url,
-                  name: rawTweet.user.name,
-                  screen_name: rawTweet.user.screen_name
-              },
-              text: rawTweet.text,
-              entities: {
-                  hashtags: rawTweet.entities.hashtags
-              }
-          };
+        makeAppTweets: rawTweets => {
 
-          if (rawTweet.geo) {
-            promises.push(GmapsService.reverseGeocode(rawTweet.geo.coordinates));
-            tweet.location = { type: 0 };
-          }
-          else {
-            promises.push(GmapsService.geocode(rawTweet.place.full_name));
-            tweet.location = { type: 1 };
-          }
+            const minimizeTweet = rawTweet => {
 
-          tweets.push(tweet);
-        }
-      });
+                return {
+                    user:{
+                        profile_image_url: rawTweet.user.profile_image_url,
+                        name: rawTweet.user.name,
+                        screen_name: rawTweet.user.screen_name
+                    },
+                    text: rawTweet.text,
+                    entities: {
+                        hashtags: rawTweet.entities.hashtags
+                    }
+                };
 
-      Promise.all(promises)
-        .then(values => {
-          values.forEach((val, i) => {
-            let marker = GmapsService.createMarker(map, val.geometry.location.lat, val.geometry.location.lng);
-            angular.extend(tweets[i].location, {
-              address: val.formatted_address,
-              marker: marker,
-              lat: val.geometry.location.lat,
-              lng: val.geometry.location.lng
+            };
+
+            const makeTweetMarker = (minTweet, geocodingResult) => {
+                angular.extend(minTweet.location, {
+                    address: geocodingResult.formatted_address,
+                    marker: GmapsService.createMarker(map, geocodingResult.geometry.location.lat, geocodingResult.geometry.location.lng),
+                    lat: geocodingResult.geometry.location.lat,
+                    lng: geocodingResult.geometry.location.lng
+                });
+            };
+
+            return new Promise((resolve, reject) => {
+
+                let promises = [];
+                let appTweets = [];
+
+                rawTweets.forEach(rawTweet => {
+
+                   if(rawTweet.geo || rawTweet.place) {
+
+                       let minTweet = minimizeTweet(rawTweet);
+
+                       if (rawTweet.geo) {
+                           promises.push(GmapsService.reverseGeocode(rawTweet.geo.coordinates));
+                           minTweet.location = { type: 0 };
+                       }
+                       else {
+                           promises.push(GmapsService.geocode(rawTweet.place.full_name));
+                           minTweet.location = { type: 1 };
+                       }
+                       appTweets.push(minTweet);
+
+                   }
+
+                });
+
+                Promise.all(promises)
+                    .then(geocodingResults => {
+                        geocodingResults.forEach((result, i) => {
+                            makeTweetMarker(appTweets[i], result);
+                            appTweets[i].id = i
+                        });
+                        resolve(appTweets);
+                    })
+                    .catch(reject)
+
             });
-            tweets[i].id = i;
-          });
-          resolve(tweets);
-        })
-        .catch(reject);
-    });
-  }
 
-}
+        }
+
+    };
+
+}];
