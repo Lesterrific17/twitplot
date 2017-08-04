@@ -83,7 +83,7 @@
                 <br/>
                 <span class="hashtags" ng-repeat="hashtag in tweet.entities.hashtags">#{{ hashtag.text }} </span>
             </div>
-            <div class="tweet-location-box" ng-click="viewLocation(tweet.location.marker, tweet.location.address)">
+            <div class="tweet-location-box" ng-click="focusTweetMarker(tweet.id)">
                 <div class="icon-container tweet-location-icon">
                     <img src="images/location.svg"/>
                 </div>

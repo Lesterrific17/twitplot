@@ -78,8 +78,9 @@ export default function($scope, $timeout, TwitterService, GmapsService, TweetSer
     });
 
     /*  centers and zooms the map on a location */
-    $scope.viewLocation = (marker, address) => {
-        GmapsService.setMapCenter(map, marker, address);
+    $scope.focusTweetMarker = tweetId => {
+        GmapsService.setMapCenter(map, $scope.tweets[tweetId].location.marker, $scope.tweets[tweetId].location.address);
+        $scope.tweets[tweetId].location.marker.icon.strokeColor = 'seagreen';
     };
 
     /*  TO BE IMPLEMENTED IN UI: Displays any error messages (string) to the user   */
@@ -127,12 +128,17 @@ export default function($scope, $timeout, TwitterService, GmapsService, TweetSer
 
     };
 
+    const highlightTweetMarker = tweetId => {
+
+    };
+
     const addMarkerEventListeners = appTweets => {
         appTweets.forEach(tweet => {
             tweet.location.marker.addListener('click', () => {
                 $timeout(() => {
                     $scope.tweetFilter = { id: tweet.id };
-                    $scope.viewLocation(tweet.location.marker, tweet.location.address);
+                    //$scope.viewLocation(tweet.location.marker, tweet.location.address);
+                    $scope.focusTweetMarker(tweet.id);
                 });
             });
         });
@@ -150,6 +156,8 @@ export default function($scope, $timeout, TwitterService, GmapsService, TweetSer
                     $scope.tweets = appTweets;
                     addMarkerEventListeners($scope.tweets);
                 });
+            })
+            .then(() => {
                 $scope.loadingLocations = false;
                 $scope.loadingTweets = false;
             })

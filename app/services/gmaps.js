@@ -70,7 +70,7 @@ export default ['$http', function($http){
 
         /*  */
         deEmphasizeMarker: marker => {
-            marker.icon.strokeOpacity = 0.2;
+            marker.icon.strokeColor = 'seagreen';
         },
 
 
