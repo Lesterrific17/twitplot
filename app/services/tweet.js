@@ -15,7 +15,8 @@ export default ['GmapsService', function (GmapsService) {
                     text: rawTweet.text,
                     entities: {
                         hashtags: rawTweet.entities.hashtags
-                    }
+                    },
+                    display: true
                 };
 
             };

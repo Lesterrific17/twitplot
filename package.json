@@ -5,10 +5,12 @@
   "description": "Maps tweets on map using Twitter API and GMaps API.",
   "dependencies": {
     "angular": "^1.5.11",
+    "angular-animate": "^1.6.5",
     "angular-mocks": "1.5.x",
     "angular-sanitize": "1.5.x",
     "bootstrap": "^3.3.7",
-    "jquery": "^3.2.1"
+    "jquery": "^3.2.1",
+    "ng-scroll": "^1.0.4"
   },
   "devDependencies": {
     "css-loader": "^0.28.4",

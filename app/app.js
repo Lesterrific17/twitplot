@@ -1,5 +1,6 @@
 import angular from 'angular';
 import 'angular-sanitize';
+import 'angular-animate';
 import $ from 'jquery';
 import 'bootstrap/dist/css/bootstrap.css';
 
@@ -16,7 +17,7 @@ import toggleDirective from './directives/toggle';
 window.jQuery = $;
 window.$ = $;
 
-var app = angular.module('Twitplot', ['ngSanitize'])
+var app = angular.module('Twitplot', ['ngSanitize', 'ngAnimate'])
     .controller('MainController', MainController)
     .factory('TwitterService', TwitterService)
     .factory('GmapsService', GmapsService)

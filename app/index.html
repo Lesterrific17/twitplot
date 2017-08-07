@@ -6,6 +6,8 @@
 </head>
 <body ng-controller="MainController">
 
+<! ------------------------         APP PANE      ------------------------- >
+
 <div id="twitplot-controls">
     <div id="app-id">Twitplot</div>
     <div class="app-id-gutter"></div>
@@ -17,11 +19,11 @@
 
     <div class="control-content">
         <div id="search-div">
-            <div ng-repeat="q in searchParameters track by $index" class="search-entry {{ q.type }}-search" ng-class="">
+            <div ng-repeat="p in searchParameters track by $index" class="search-entry {{ p.type }}-search" ng-class="">
                 <div class="icon-container search-entry-x" ng-click="deleteSearchParam($index)">
                     <img src="images/wrong.svg"/>
                 </div>
-                <div class="search-entry-text">{{ q.entry }}</div>
+                <div class="search-entry-text">{{ p.entry }}</div>
             </div>
             <form ng-submit="validateSearchParam()" id="sparam-form">
                 <input id="search-param-input" type="text" placeholder="Add Parameter" ng-model="inputParameter"/>
@@ -29,7 +31,11 @@
             <div class="content-gutter"></div>
         </div>
         <div id="refresh-box">
-            <input type="button" class="generic-button" ng-class="[loadingTweets === true || searchParameters.length === 0 ? 'inactive' : '']" ng-click="refreshTweets()" ng-value="refreshButton.text"/>
+            <input type="button"
+                   class="generic-button animate2s"
+                   ng-class="[ loadingTweets || searchParameters.length === 0 ? 'inactive' : '' ]"
+                   ng-click="refreshTweets()"
+                   ng-value=" loadingTweets ? 'Refreshing' : 'Refresh Tweets' "/>
         </div>
     </div>
 
@@ -40,6 +46,15 @@
         <div class="control-label">Settings</div>
     </div>
     <div class="control-content">
+        <div class="sub-control-header"></div>
+        <div class="conf-list-container">
+            <div class="conf-entry">
+                <div class="conf-label">Twitter Search Count</div>
+                <div class="conf-action extended-conf-action">
+                    <input type="number" ng-model="tweetCount" max="999" min="1" id="tweet-count-input"/>
+                </div>
+            </div>
+        </div>
         <div class="sub-control-header">WHAT TO PLOT</div>
         <div class="conf-list-container">
           <div ng-repeat="setting in locationSettings">
@@ -50,13 +65,21 @@
         <div class="conf-list-container">
             <div class="conf-entry">
                 <div class="bar-selector">
-                    <div class="bar-selector-entry selected">Map Zoom</div>
-                    <div class="bar-selector-entry">Marker Size</div>
+                    <div class="bar-selector-entry animate2s"
+                         ng-class="[ scrollFuncSelected === $index ? 'selected' : '' ]"
+                         ng-repeat="scrollFunc in scrollFuncs track by $index"
+                         ng-click="setScrollFunc($index)">
+                        {{ scrollFunc.name }}
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<! ------------------------  END OF APP PANE    ------------------------- >
+
+<! ------------------------     TWITTER PANE    ------------------------- >
 
 <div id="twitplot-data">
     <div class="preloader-overlay" ng-if="loadingTweets">
@@ -66,9 +89,26 @@
     </div>
     <div id="data-header">SEARCH RESULTS</div>
     <div class="app-id-gutter"></div>
-    <div id="search-result-info">Found <b> {{ tweets.length }} </b> Tweets</div>
+
+    <div id="search-result-info">
+        <div id="search-nav-slide-canvas"
+             class="animate2s"
+             ng-class="[ isViewingTweet ? 'show-pane2' : 'show-pane1' ]">
+            <div class="slide-pane" id="search-info">
+                Found <b> {{ tweets.length }} </b> {{ (tweets.length !== 1) ? 'tweets' : 'tweet' }}
+            </div>
+            <div class="slide-pane" ng-click="backToResults()">
+                <div class="icon-container" id="back-nav-icon">
+                    <img src="images/back-arrow2.svg"/>
+                </div>
+                <div id="back-nav-label">Back to Results</div>
+            </div>
+        </div>
+    </div>
+
     <div id="tweets-list">
         <div class="tweet-box" ng-repeat="tweet in tweets | filter:tweetFilter:true track by tweet.id">
+            <div class="tweet-disabler animate3s" ng-class="[ tweet.display ? '' : 't-disable' ]"></div>
             <div class="user-head">
                 <div class="col-20">
                     <div class="user-avatar" style="background-image: url({{ tweet.user.profile_image_url }})"></div>
@@ -83,7 +123,7 @@
                 <br/>
                 <span class="hashtags" ng-repeat="hashtag in tweet.entities.hashtags">#{{ hashtag.text }} </span>
             </div>
-            <div class="tweet-location-box" ng-click="focusTweetMarker(tweet.id)">
+            <div class="tweet-location-box animate2s" ng-click="focusTweetMarker(tweet.id)">
                 <div class="icon-container tweet-location-icon">
                     <img src="images/location.svg"/>
                 </div>
@@ -93,16 +133,26 @@
     </div>
 </div>
 
+<! ------------------------     END OF TWITTER PANE     ------------------------- >
+
+<! ------------------------         MAPPING PANE        ------------------------- >
+
 <div id="map-container">
     <div class="preloader-overlay" ng-if="loadingLocations">
         <div class="cssload-container">
             <div class="cssload-speeding-wheel"></div>
         </div>
     </div>
-    <div id="map-hint-flash" ng-if="showMapFlash"><div>{{ mapFlashText }}</div></div>
-    <div id="map-canvas" ng-scroll="test()"></div>
+    <div id="map-hint-flash" class="animate-show animate-hide" ng-show="showMapFlash"><div>{{ mapFlashText }}</div></div>
+    <div id="map-canvas" data-ng-scroll-up="test()"></div>
 </div>
 
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-cq1BDG40iEVQG3Bm6rCc5X2yMSvlYPc&callback=initMap"></script>
+<! ------------------------     END OF MAPPING PANE     ------------------------- >
+
+<script
+        async
+        defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-cq1BDG40iEVQG3Bm6rCc5X2yMSvlYPc&callback=initMap">
+</script>
 </body>
 </html>

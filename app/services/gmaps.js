@@ -13,10 +13,10 @@ export default ['$http', function($http){
                 position: new google.maps.LatLng(lat, lng),
                 icon: {
                     path: 'M-10,0a10,10 0 1,0 20,0a10,10 0 1,0 -20,0',
-                    scale: 2,
-                    strokeColor: 'indianred',
+                    scale: 1,
+                    strokeColor: 'seagreen',
                     strokeWeight: 40,
-                    strokeOpacity: 0.7
+                    strokeOpacity: 0.8
                 },
                 map: map
             });
@@ -29,10 +29,10 @@ export default ['$http', function($http){
             let infoWindow = new google.maps.InfoWindow({
                 content: `<h3>${ address }</h3>`
             });
-            setTimeout(function () { infoWindow.close(); }, 5000)
+            setTimeout(function () { infoWindow.close(); }, 5000);
 
             map.setZoom(14);
-            map.panTo(marker.position);
+            map.setCenter(marker.position);
             infoWindow.open(map, marker);
 
         },
