@@ -96,7 +96,7 @@ div.inactive{
     width: 49px;
     height: 49px;
     margin: 0 auto;
-    border: 3px solid darkcyan;
+    border: 3px solid seagreen;
     border-radius: 50%;
     border-left-color: transparent;
     border-right-color: transparent;
@@ -521,9 +521,9 @@ div.tweet-disabler{
     position: absolute;
     margin: auto;
     top: 0px;
-    bottom: 0px;
+    bottom: -200%;
     right: 0px;
-    left: -200%;
+    left: 0px;
     height: 99%;
     width: 99%;
     background-color: rgba(255, 255, 255, 0.9);
@@ -531,7 +531,7 @@ div.tweet-disabler{
 }
 
 div.t-disable{
-    left: 0px;
+    bottom: 0;
 }
 
 .user-head{

@@ -3,6 +3,7 @@ export default ['$http', function($http){
 
     let gmapsApiUrl = 'https://maps.googleapis.com/maps/api/geocode/json';
     let apiKey = 'AIzaSyA-cq1BDG40iEVQG3Bm6rCc5X2yMSvlYPc';
+    let currentInfoWindow;
 
     return{
 
@@ -26,14 +27,17 @@ export default ['$http', function($http){
         /*  zooms in dead center to a location on a map */
         setMapCenter: (map, marker, address) => {
 
+            if(currentInfoWindow)
+                currentInfoWindow.close();
+
             let infoWindow = new google.maps.InfoWindow({
                 content: `<h3>${ address }</h3>`
             });
-            setTimeout(function () { infoWindow.close(); }, 5000);
 
-            map.setZoom(14);
+            map.setZoom(12);
             map.setCenter(marker.position);
             infoWindow.open(map, marker);
+            currentInfoWindow = infoWindow;
 
         },
 
@@ -67,13 +71,6 @@ export default ['$http', function($http){
             .catch(reject);
           });
         },
-
-        /*  */
-        deEmphasizeMarker: marker => {
-            marker.icon.strokeColor = 'seagreen';
-        },
-
-
 
     }
 

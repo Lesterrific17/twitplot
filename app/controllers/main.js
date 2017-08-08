@@ -1,6 +1,8 @@
 
 export default function($scope, $timeout, TwitterService, GmapsService, TweetService) {
 
+    const MARKER_SIZE_SCALE_FACTOR = 0.2;
+
     $scope.tweets = [];
     $scope.tweetCount = 150;
     $scope.searchParameters = [];
@@ -9,7 +11,6 @@ export default function($scope, $timeout, TwitterService, GmapsService, TweetSer
         { name: 'Map Zoom' },
         { name: 'Marker Size' }
     ];
-    $scope.scrollFuncSelected = 1;
 
     $scope.locationSettings = [
         { name: 'Twitter Geolocations', state: true, },
@@ -21,6 +22,65 @@ export default function($scope, $timeout, TwitterService, GmapsService, TweetSer
     $scope.isViewingTweet = false;
     $scope.showMapFlash = false;
     $scope.mapFlashText = '';
+    $scope.scrollWheelValue = 0;
+    $scope.scrollFuncSelected = 0;
+
+    var scrollWheelPrevValue = 0;
+    var hasInitScrollWatch = false;
+
+    $scope.$watch('locationSettings', () => {
+
+        $scope.backToResults();
+        initTweetLocationDisablers();
+        /*$scope.tweets.forEach(function (tweet, index) {
+         if($scope.locationSettings[tweet.location.type].state === true){
+         tweet.location.marker.setMap(map);
+         }
+         else{
+         tweet.location.marker.setMap(null);
+         }
+         });
+         */
+
+    }, true);
+
+    $scope.$watch('loadingTweets', () => {
+        $('#twitplot-data').scrollTop(0);
+    });
+
+    $scope.$watch('scrollWheelValue', () => {
+        // map zooming is selected
+        if($scope.scrollFuncSelected === 0 && hasInitScrollWatch){
+            adjustMapZoom();
+        }
+        // marker scaling is selected
+        else if($scope.scrollFuncSelected === 1 && hasInitScrollWatch && $scope.tweets.length > 0){
+            adjustMarkerSize(($scope.scrollWheelValue - scrollWheelPrevValue) * MARKER_SIZE_SCALE_FACTOR);
+        }
+        hasInitScrollWatch = true;
+        scrollWheelPrevValue = $scope.scrollWheelValue;
+
+    }, true);
+
+    $scope.$watch('scrollFuncSelected', () => {
+
+        switch ($scope.scrollFuncSelected) {
+            case 0: {
+                if( window.map ) {
+                    setMapZoomingOnScroll(true);
+                }
+                break;
+            }
+            case 1: {
+                setMapZoomingOnScroll(false);
+                if( $scope.tweets.length > 0 ){
+                    mapCtrlFlash(`Marker Scale: ${ getCurrentMarkerScale() }x`);
+                }
+                break;
+            }
+        }
+
+    });
 
     /*  deletes a search parameter given its index in the parameters array  */
     $scope.deleteSearchParam = value => {
@@ -57,43 +117,23 @@ export default function($scope, $timeout, TwitterService, GmapsService, TweetSer
     $scope.refreshTweets = () => {
 
         if($scope.searchParameters.length > 0) {
-            clearData();
             $scope.loadingTweets = true;
+            clearData();
             getTweets();
         }
 
     };
 
-    /*  watches for any changes in the location settings to refresh the app's data   */
-    $scope.$watch('locationSettings', function(){
-
-        $scope.backToResults();
-        initTweetLocationDisablers();
-        /*$scope.tweets.forEach(function (tweet, index) {
-            if($scope.locationSettings[tweet.location.type].state === true){
-                tweet.location.marker.setMap(map);
-            }
-            else{
-                tweet.location.marker.setMap(null);
-            }
-        });
-        */
-
-    }, true);
-
-    $scope.$watch('loadingTweets', function() {
-        $('#twitplot-data').scrollTop(0);
-    });
-
+    /*  returns the user to the list of tweets after viewing a tweet */
     $scope.backToResults = () => {
         $scope.isViewingTweet = false;
         $scope.tweetFilter = {};
         restoreMarkers();
     };
 
+    /*  sets the value of the $scope.scrollFuncSelected to the funcIndex param */
     $scope.setScrollFunc = funcIndex => {
         $scope.scrollFuncSelected = funcIndex;
-        mapCtrlFlash();
     };
 
     /*  centers and zooms the map on a location */
@@ -117,36 +157,63 @@ export default function($scope, $timeout, TwitterService, GmapsService, TweetSer
 
     };
 
-    $scope.test = () => {
-        console.log('scroll');
+    /*  enables / disables zooming of map via scrollwheel */
+    const setMapZoomingOnScroll = flag => {
+        if (map) {
+            map.setOptions({ scrollwheel: flag });
+        }
     };
 
-    const mapCtrlFlash = () => {
-        switch ($scope.scrollFuncSelected){
-            case 0: {
-                $scope.mapFlashText = `Zoom Level: ${ map.getZoom() }x`;
-                break;
-            }
-            case 1: {
-                $scope.mapFlashText =  `Marker Scale: 2x `;
-                break;
-            }
-            default: break;
-        }
+    /*  lets Google Maps API handle the zooming of map ; just display the zoom info*/
+    const adjustMapZoom = () => {
+
+    };
+
+    /*  adjusts the rendered size of the tweet markers on the map */
+    const adjustMarkerSize = scaleAdd => {
+
+        $scope.tweets.forEach((tweet) => {
+            tweet.location.marker.getIcon().scale += scaleAdd;
+            tweet.location.marker.getIcon().strokeWeight = Math.abs(tweet.location.marker.getIcon().scale) * 40;
+        });
+        refreshMarkers();
+        mapCtrlFlash(`Marker Scale: ${ $scope.tweets[0].location.marker.getIcon().scale.toFixed(2) }x`);
+
+    };
+
+    /*  returns the current scale size of the tweet markers */
+    const getCurrentMarkerScale = () => {
+        return $scope.tweets[0].location.marker.getIcon().scale.toFixed(2);
+    };
+
+    /*  flashes the big font tooltip overlay on the map with a specified text */
+    const mapCtrlFlash = text => {
+
+        $scope.mapFlashText =  text;
         $scope.showMapFlash = true;
         setTimeout(() => {
             $scope.showMapFlash = false;
         }, 2000);
+
     };
 
+    /*  restores the original opacity of the markers (visible and not visible) */
     const restoreMarkers = () => {
         $scope.tweets.forEach((tweet, i) => {
             $scope.tweets[i].location.marker.getIcon().strokeOpacity = 0.8;
+        });
+        refreshMarkers();
+    };
+
+    /*  calls the method setMap() on each tweet markers (visibility is dependent on location settings)  */
+    const refreshMarkers = () => {
+        $scope.tweets.forEach((tweet) => {
             if($scope.locationSettings[tweet.location.type].state)
-                $scope.tweets[i].location.marker.setMap(map);
+                tweet.location.marker.setMap(map);
         });
     };
 
+    /*  removes all the markers (visible and not visible) and clears the tweets array  */
     const clearData = () => {
         $scope.tweets.forEach((tweet, i) => {
             $scope.tweets[i].location.marker.setMap(null);
@@ -184,6 +251,7 @@ export default function($scope, $timeout, TwitterService, GmapsService, TweetSer
 
     };
 
+    /*  adds event handlers to the tweet markers on the map  */
     const addMarkerEventListeners = appTweets => {
         appTweets.forEach(tweet => {
             tweet.location.marker.addListener('click', () => {
@@ -194,6 +262,7 @@ export default function($scope, $timeout, TwitterService, GmapsService, TweetSer
         });
     };
 
+    /*  sets the 'display' property of each tweet according to the location settings. */
     const initTweetLocationDisablers = () => {
         $scope.tweets.forEach((tweet, i) => {
             $scope.tweets[i].display = $scope.locationSettings[tweet.location.type].state;
@@ -217,6 +286,7 @@ export default function($scope, $timeout, TwitterService, GmapsService, TweetSer
                 $timeout(() => {
                     $scope.tweets = appTweets;
                     addMarkerEventListeners($scope.tweets);
+                    initTweetLocationDisablers();
                 });
             })
             .then(() => {

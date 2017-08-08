@@ -137,14 +137,14 @@
 
 <! ------------------------         MAPPING PANE        ------------------------- >
 
-<div id="map-container">
+<div id="map-container" scrollable>
     <div class="preloader-overlay" ng-if="loadingLocations">
         <div class="cssload-container">
             <div class="cssload-speeding-wheel"></div>
         </div>
     </div>
     <div id="map-hint-flash" class="animate-show animate-hide" ng-show="showMapFlash"><div>{{ mapFlashText }}</div></div>
-    <div id="map-canvas" data-ng-scroll-up="test()"></div>
+    <div id="map-canvas"></div>
 </div>
 
 <! ------------------------     END OF MAPPING PANE     ------------------------- >

@@ -13,6 +13,7 @@ import GmapsService from './services/gmaps';
 import TweetService from './services/tweet';
 import toggleSettingDirective from './directives/toggleSetting';
 import toggleDirective from './directives/toggle';
+import scrollableDirective from './directives/scrollable';
 
 window.jQuery = $;
 window.$ = $;
@@ -23,7 +24,8 @@ var app = angular.module('Twitplot', ['ngSanitize', 'ngAnimate'])
     .factory('GmapsService', GmapsService)
     .factory('TweetService', TweetService)
     .directive('toggleSetting', toggleSettingDirective)
-    .directive('toggle', toggleDirective);
+    .directive('toggle', toggleDirective)
+    .directive('scrollable', scrollableDirective);
 
 window.initMap = function() {
 
