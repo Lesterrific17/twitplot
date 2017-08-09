@@ -60094,9 +60094,6 @@ exports.default = function ($scope, $timeout, TwitterService, GmapsService, Twee
             default:
                 {
                     setMapZoomingOnScroll(false);
-                    if ($scope.tweets.length > 0) {
-                        mapCtrlFlash('Marker Scale: ' + getCurrentMarkerScale() + 'x');
-                    }
                     break;
                 }
         }
@@ -60181,21 +60178,6 @@ exports.default = function ($scope, $timeout, TwitterService, GmapsService, Twee
             tweet.location.marker.getIcon().strokeWeight = Math.abs(tweet.location.marker.getIcon().scale) * 40;
         });
         refreshMarkers();
-        mapCtrlFlash('Marker Scale: ' + $scope.tweets[0].location.marker.getIcon().scale.toFixed(2) + 'x');
-    };
-
-    /*  returns the current scale size of the tweet markers */
-    var getCurrentMarkerScale = function getCurrentMarkerScale() {
-        return $scope.tweets[0].location.marker.getIcon().scale.toFixed(2);
-    };
-
-    /*  flashes the big font tooltip overlay on the map with a specified text */
-    var mapCtrlFlash = function mapCtrlFlash(text) {
-        $scope.mapFlashText = text;
-        $scope.showMapFlash = true;
-        setTimeout(function () {
-            $scope.showMapFlash = false;
-        }, 2000);
     };
 
     /*  restores the original opacity of the markers (visible and not visible) */
@@ -60564,7 +60546,7 @@ exports.default = function () {
 /* 355 */
 /***/ (function(module, exports) {
 
-var path = '/Users/Mark/Developer/twitplot/app/templates/toggleSetting.html';
+var path = '/Users/billieko/Developer/github/twitplot/app/templates/toggleSetting.html';
 var html = "<div class=\"conf-entry\" >\n    <div class=\"conf-label\">{{ setting.name }}</div>\n    <div class=\"conf-action\">\n        <toggle ng-model=\"setting.state\"></toggle>\n    </div>\n</div>\n";
 window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, html) }]);
 module.exports = path;

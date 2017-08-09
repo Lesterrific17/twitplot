@@ -146,19 +146,6 @@ export default function($scope, $timeout, TwitterService, GmapsService, TweetSer
             tweet.location.marker.getIcon().strokeWeight = Math.abs(tweet.location.marker.getIcon().scale) * 40;
         });
         refreshMarkers();
-        //mapCtrlFlash(`Marker Scale: ${$scope.tweets[0].location.marker.getIcon().scale.toFixed(2)}x`);
-    };
-
-    /*  returns the current scale size of the tweet markers */
-    const getCurrentMarkerScale = () => $scope.tweets[0].location.marker.getIcon().scale.toFixed(2);
-
-    /*  flashes the big font tooltip overlay on the map with a specified text */
-    const mapCtrlFlash = text => {
-        $scope.mapFlashText =  text;
-        $scope.showMapFlash = true;
-        setTimeout(() => {
-            $scope.showMapFlash = false;
-        }, 2000);
     };
 
     /*  restores the original opacity of the markers (visible and not visible) */

@@ -36,7 +36,7 @@
     "webpack-dev-server": "^2.5.1"
   },
   "scripts": {
-    "start": "webpack-dev-server --port 8000 --content-base dist/",
+    "start": "npm run lint && webpack-dev-server --port 8000 --content-base dist/",
     "lint": "eslint app/**/*.js",
     "build": "rm -rf dist && npm run lint && webpack"
   }
