@@ -1,4 +1,5 @@
-export default function() {
+
+export default () => {
     let authorizationResult = false;
 
     return {
@@ -27,8 +28,9 @@ export default function() {
                     if (!error) {
                         authorizationResult = result;
                         resolve();
-                    } else {
-                        reject();
+                    }
+                    else {
+                        reject(error);
                     }
                 })
             }),
@@ -42,7 +44,7 @@ export default function() {
         /*  sends a query string to Twitter's Search API and returns the JSON response */
         searchTweets: (query, count) =>
           new Promise((resolve, reject) => {
-              let url = TWITTER_API + `?q=${query}&count=${count}`;
+              let url = `${TWITTER_API}?q=${query}&count=${count}`;
               authorizationResult.get(url)
                 .done(resolve)
                 .fail(reject);

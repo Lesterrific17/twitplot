@@ -38,6 +38,6 @@
   "scripts": {
     "start": "webpack-dev-server --port 8000 --content-base dist/",
     "lint": "eslint app/**/*.js",
-    "build": "rm -rf dist && webpack"
+    "build": "rm -rf dist && npm run lint && webpack"
   }
 }

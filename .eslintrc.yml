@@ -6,6 +6,10 @@ env:
   jquery: true
 globals:
   map: true
+  google: true
+  angular: true
+  OAuth: true
+  TWITTER_API: true
 extends: 'eslint:recommended'
 parserOptions:
   sourceType: module

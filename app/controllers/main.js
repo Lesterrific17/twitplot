@@ -56,9 +56,6 @@ export default function($scope, $timeout, TwitterService, GmapsService, TweetSer
             }
             default: {
                 setMapZoomingOnScroll(false);
-                if ($scope.tweets.length > 0) {
-                    mapCtrlFlash(`Marker Scale: ${getCurrentMarkerScale()}x`);
-                }
                 break;
             }
         }
@@ -149,7 +146,7 @@ export default function($scope, $timeout, TwitterService, GmapsService, TweetSer
             tweet.location.marker.getIcon().strokeWeight = Math.abs(tweet.location.marker.getIcon().scale) * 40;
         });
         refreshMarkers();
-        mapCtrlFlash(`Marker Scale: ${$scope.tweets[0].location.marker.getIcon().scale.toFixed(2)}x`);
+        //mapCtrlFlash(`Marker Scale: ${$scope.tweets[0].location.marker.getIcon().scale.toFixed(2)}x`);
     };
 
     /*  returns the current scale size of the tweet markers */

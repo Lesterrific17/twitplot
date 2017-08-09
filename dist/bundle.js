@@ -60346,7 +60346,7 @@ exports.default = function () {
                         authorizationResult = result;
                         resolve();
                     } else {
-                        reject();
+                        reject(error);
                     }
                 });
             });
@@ -60361,7 +60361,7 @@ exports.default = function () {
         /*  sends a query string to Twitter's Search API and returns the JSON response */
         searchTweets: function searchTweets(query, count) {
             return new Promise(function (resolve, reject) {
-                var url = "/1.1/search/tweets.json" + ("?q=" + query + "&count=" + count);
+                var url = "/1.1/search/tweets.json" + "?q=" + query + "&count=" + count;
                 authorizationResult.get(url).done(resolve).fail(reject);
             });
         }
@@ -60385,13 +60385,12 @@ exports.default = ['$http', function ($http) {
 
     var gmapsApiUrl = 'https://maps.googleapis.com/maps/api/geocode/json';
     var apiKey = 'AIzaSyA-cq1BDG40iEVQG3Bm6rCc5X2yMSvlYPc';
-    var currentInfoWindow = void 0;
+    var currentInfoWindow = null;
 
     return {
 
         /*  puts a marker on a map corresponding to the given coordinate */
         createMarker: function createMarker(map, lat, lng) {
-
             return new google.maps.Marker({
                 position: new google.maps.LatLng(lat, lng),
                 icon: {
@@ -60426,7 +60425,7 @@ exports.default = ['$http', function ($http) {
             return new Promise(function (resolve, reject) {
                 $http({
                     method: 'GET',
-                    url: gmapsApiUrl + '?address=' + encodeURIComponent(address) + ('&key=' + apiKey)
+                    url: gmapsApiUrl + '?address=' + encodeURIComponent(address) + '&key=' + apiKey
                 }).then(function (response) {
                     resolve(response.data.results[0]);
                 }).catch(reject);
@@ -60464,13 +60463,10 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 exports.default = ['GmapsService', function (GmapsService) {
-
     return {
-
         makeAppTweets: function makeAppTweets(rawTweets) {
 
             var minimizeTweet = function minimizeTweet(rawTweet) {
-
                 return {
                     user: {
                         profile_image_url: rawTweet.user.profile_image_url,
@@ -60568,7 +60564,7 @@ exports.default = function () {
 /* 355 */
 /***/ (function(module, exports) {
 
-var path = '/Users/billieko/Developer/github/twitplot/app/templates/toggleSetting.html';
+var path = '/Users/Mark/Developer/twitplot/app/templates/toggleSetting.html';
 var html = "<div class=\"conf-entry\" >\n    <div class=\"conf-label\">{{ setting.name }}</div>\n    <div class=\"conf-action\">\n        <toggle ng-model=\"setting.state\"></toggle>\n    </div>\n</div>\n";
 window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, html) }]);
 module.exports = path;
@@ -60621,10 +60617,10 @@ exports.default = function ($timeout) {
     return {
 
         restrict: 'A',
-        link: function link(scope, element, attribute, ngModel) {
+        link: function link(scope, element) {
             $(element).bind('DOMMouseScroll mousewheel wheel', function (e) {
                 $timeout(function () {
-                    if (e.originalEvent.deltaY < 0) scope.scrollWheelValue++;else if (e.originalEvent.deltaY > 0) scope.scrollWheelValue--;
+                    if (e.originalEvent.deltaY < 0) scope.scrollWheelValue += 1;else if (e.originalEvent.deltaY > 0) scope.scrollWheelValue -= 1;
                 });
             });
         }

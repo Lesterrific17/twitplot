@@ -1,5 +1,5 @@
 
-export default ($timeout) => ({
+export default $timeout => ({
     restrict: 'E',
     template:
       `<div class="modern-toggle animate2s" ng-class="[state ? 'on' : 'off']">
