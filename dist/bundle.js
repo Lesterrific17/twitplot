@@ -60313,15 +60313,14 @@ exports.default = function ($scope, $timeout, TwitterService, GmapsService, Twee
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.default = ['$q', function ($q) {
 
+exports.default = function () {
     var authorizationResult = false;
 
     return {
 
         /*  initialize OAuth.io with public key of the application  */
         initialize: function initialize() {
-
             OAuth.initialize('5ySzGcSOfHjE7ouSylKxT35iklE', {
                 cache: true
             });
@@ -60339,43 +60338,35 @@ exports.default = ['$q', function ($q) {
         /*  connects the application to Twitter using the OAuth JS library
         *   OAuth handles the authentication process */
         connectTwitter: function connectTwitter() {
-
-            var deferred = $q.defer();
-            OAuth.popup("twitter", {
-                cache: true
-            }, function (error, result) {
-                if (!error) {
-                    authorizationResult = result;
-                    deferred.resolve();
-                } else {}
+            return new Promise(function (resolve, reject) {
+                OAuth.popup("twitter", {
+                    cache: true
+                }, function (error, result) {
+                    if (!error) {
+                        authorizationResult = result;
+                        resolve();
+                    } else {
+                        reject();
+                    }
+                });
             });
-            return deferred.promise;
         },
 
         /*  clears the cached authentication cookie to reset OAuth credentials */
         clearCache: function clearCache() {
-
             OAuth.clearCache('twitter');
             authorizationResult = false;
         },
 
         /*  sends a query string to Twitter's Search API and returns the JSON response */
         searchTweets: function searchTweets(query, count) {
-
-            var deferred = $q.defer();
-            var url = "/1.1/search/tweets.json" + ('?q=' + query + '&count=' + count);
-
-            var promise = authorizationResult.get(url).done(function (data) {
-                deferred.resolve(data);
-            }).fail(function (err) {
-                deferred.reject(err);
+            return new Promise(function (resolve, reject) {
+                var url = "/1.1/search/tweets.json" + ("?q=" + query + "&count=" + count);
+                authorizationResult.get(url).done(resolve).fail(reject);
             });
-
-            return deferred.promise;
         }
-
     };
-}];
+};
 
 /***/ }),
 /* 352 */
