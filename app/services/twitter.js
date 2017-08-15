@@ -6,7 +6,7 @@ export default () => {
 
         /*  initialize OAuth.io with public key of the application  */
         initialize: () => {
-            OAuth.initialize('5ySzGcSOfHjE7ouSylKxT35iklE', {
+            OAuth.initialize('gUlVqtfgNfggU3TuGovMnV6slII', {
                 cache: true
             });
             authorizationResult = OAuth.create("twitter");

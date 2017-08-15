@@ -60303,7 +60303,7 @@ exports.default = function () {
 
         /*  initialize OAuth.io with public key of the application  */
         initialize: function initialize() {
-            OAuth.initialize('5ySzGcSOfHjE7ouSylKxT35iklE', {
+            OAuth.initialize('gUlVqtfgNfggU3TuGovMnV6slII', {
                 cache: true
             });
             authorizationResult = OAuth.create("twitter");
@@ -60546,7 +60546,7 @@ exports.default = function () {
 /* 355 */
 /***/ (function(module, exports) {
 
-var path = '/Users/billieko/Developer/github/twitplot/app/templates/toggleSetting.html';
+var path = '/Users/Mark/Developer/twitplot/app/templates/toggleSetting.html';
 var html = "<div class=\"conf-entry\" >\n    <div class=\"conf-label\">{{ setting.name }}</div>\n    <div class=\"conf-action\">\n        <toggle ng-model=\"setting.state\"></toggle>\n    </div>\n</div>\n";
 window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, html) }]);
 module.exports = path;
